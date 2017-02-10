@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class ExampleCommandlineRunner implements CommandLineRunner {
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		log.info("Hello, world!");
 		Arrays.stream(args).forEach(log::info);
 	}
