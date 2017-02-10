@@ -10,7 +10,6 @@ buildscript {
 		classpath "com.diffplug.gradle.spotless:spotless:1.3.3"
 		classpath "de.thetaphi:forbiddenapis:2.2"
 		classpath "de.aaschmid:gradle-cpd-plugin:1.0"
-		classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.8"
 	}
 }
 
@@ -29,7 +28,6 @@ apply plugin: "cpd"
 apply plugin: "jacoco"
 apply plugin: "de.thetaphi.forbiddenapis"
 apply plugin: "com.diffplug.gradle.spotless"
-apply plugin: "net.ltgt.errorprone"
 
 // code quality configuration
 apply from: 'gradle/quality/checkstyle.gradle'
