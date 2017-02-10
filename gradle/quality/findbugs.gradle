@@ -1,0 +1,12 @@
+findbugs {
+	toolVersion = "3.0.1"
+	effort = "max"
+	includeFilter = file("config/findbugs/includeFilter.xml")
+	excludeFilter = file("config/findbugs/excludeFilter.xml")
+}
+tasks.withType(FindBugs) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}

@@ -1,0 +1,23 @@
+dependencies:
+  override:
+    - ./gradlew -v
+    - ./gradlew resolveDependencies
+general:
+  artifacts:
+    - "build/reports"
+machine:
+  environment:
+    TERM: dumb
+  java:
+    version: oraclejdk8
+  post:
+    - sudo service mysql stop
+    - sudo service postgresql stop
+test:
+  override:
+    - ./gradlew check jacocoTestReport
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/:
+        parallel: true
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;:
+        parallel: true
