@@ -66,6 +66,9 @@ dependencies {
 	// spring
 	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 
+	// other
+	compileOnly "org.projectlombok:lombok:$lombokVersion"
+
 	// testing
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 }
