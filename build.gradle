@@ -1,6 +1,9 @@
 // basic plugins
 apply plugin: "java"
 
+// custom configuration
+apply from: 'gradle/version.gradle'
+
 // basic configuration
 group = "jp.classmethod.sparrow"
 ext.artifactId = "sparrow"
