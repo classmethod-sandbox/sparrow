@@ -1,0 +1,17 @@
+// basic plugins
+apply plugin: "java"
+
+// basic configuration
+group = "jp.classmethod.sparrow"
+ext.artifactId = "sparrow"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(AbstractCompile) each {
+	it.options.encoding = "UTF-8"
+}
+
+// wrapper
+task wrapper(type: Wrapper) {
+	gradleVersion = "2.12"
+}
