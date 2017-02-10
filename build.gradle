@@ -19,6 +19,7 @@ apply plugin: "java"
 
 // custom configuration
 apply from: 'gradle/version.gradle'
+apply from: 'gradle/resolveDependencies.gradle'
 
 // code quality plugins
 apply plugin: "checkstyle"
@@ -54,6 +55,12 @@ compileJava {
 	options.compilerArgs << "-Werror"
 	options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Xlint:-deprecation"
 	options.compilerArgs << "-Xep:MissingOverride:OFF"
+}
+
+// libraries
+repositories {
+	jcenter()
+	mavenCentral()
 }
 
 // wrapper
