@@ -13,3 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package jp.classmethod.sparrow;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Sparrowアプリケーションのエントリーポイント。
+ *
+ * <p>ベーシックなSpring bootアプリケーションクラス。</p>
+ *
+ * @author daisuke
+ * @since #version#
+ */
+@SpringBootApplication
+public class SparrowApplication {
+	
+	public static void main(String[] args) {
+		SpringApplication.run(SparrowApplication.class, args);
+	}
+}
