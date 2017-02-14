@@ -71,7 +71,7 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
 
 	// testing
-	testCompile "org.projectlombok:lombok:$lombokVersion"
+	testCompileOnly "org.projectlombok:lombok:$lombokVersion" // http://qiita.com/gillax/items/1cbcff003384087f2db1
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 	testCompile "org.assertj:assertj-core:$assertjVersion"
 }
