@@ -71,6 +71,7 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
 
 	// testing
+	testCompile "org.projectlombok:lombok:$lombokVersion"
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 	testCompile "org.assertj:assertj-core:$assertjVersion"
 }
