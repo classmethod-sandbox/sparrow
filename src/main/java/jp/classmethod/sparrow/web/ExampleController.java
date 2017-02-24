@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ExampleController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ResponseEntity<?> index() {
+	public ResponseEntity<String> index() {
 		log.debug("index");
 		return ResponseEntity.ok("Hello, world!");
 	}
