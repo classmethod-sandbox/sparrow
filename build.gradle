@@ -65,12 +65,15 @@ repositories {
 dependencies {
 	// spring
 	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
 
 	// other
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
 
 	// testing
+	testCompileOnly "org.projectlombok:lombok:$lombokVersion" // http://qiita.com/gillax/items/1cbcff003384087f2db1
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+	testCompile "org.assertj:assertj-core:$assertjVersion"
 }
 
 // wrapper
