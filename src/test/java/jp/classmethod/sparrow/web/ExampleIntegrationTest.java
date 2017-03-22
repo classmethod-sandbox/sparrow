@@ -43,7 +43,6 @@ public class ExampleIntegrationTest {
 	@Autowired
 	TestRestTemplate restTemplate;
 
-
 	@Test
 	public void testGetIndex() {
 		// setup
@@ -55,16 +54,16 @@ public class ExampleIntegrationTest {
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(actual.getBody()).isEqualTo("Hello, world!");
 	}
-
-	@Test
-	public void testGetIndex2() {
-		// setup
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Object> entity = new HttpEntity<>(headers);
-		// exercise
-		ResponseEntity<String> actual = restTemplate.exchange("/calc?x=1&y=2", HttpMethod.GET, entity, String.class);
-		// verify
-		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(actual.getBody()).isEqualTo("3");
-	}
+//  GETでクエリを取得する練習
+//	@Test
+//	public void testGetIndex2() {
+//		// setup
+//		HttpHeaders headers = new HttpHeaders();
+//		HttpEntity<Object> entity = new HttpEntity<>(headers);
+//		// exercise
+//		ResponseEntity<String> actual = restTemplate.exchange("/calc?x=1&y=2", HttpMethod.GET, entity, String.class);
+//		// verify
+//		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		assertThat(actual.getBody()).isEqualTo("3");
+//	}
 }
