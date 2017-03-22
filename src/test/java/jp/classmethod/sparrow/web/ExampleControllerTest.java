@@ -16,6 +16,7 @@
 package jp.classmethod.sparrow.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,4 +59,28 @@ public class ExampleControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
 			.andExpect(content().string("Hello, world!"));
 	}
+
+	//POSTでリクエストボディを取得する練習
+	@Test
+	public void testGetIndex2() throws Exception {
+		// exercise
+		mvc.perform(post("/calc")
+				.param("x", "1")
+				.param("y", "2"))	//paramメソッドを使ってリクエストパラメータの指定
+				// verify
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+				.andExpect(content().string("3"));
+	}
+
+//  GETでクエリを取得する練習
+//	@Test
+//	public void testGetIndex2() throws Exception {
+//		// exercise
+//		mvc.perform(get("/calc?x=1&y=2"))
+//				// verify
+//				.andExpect(status().isOk())
+//				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+//				.andExpect(content().string("3"));
+//	}
 }
