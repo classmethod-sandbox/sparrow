@@ -39,11 +39,11 @@ import org.junit.runner.RunWith;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ExampleIntegrationTest {
-	
+
 	@Autowired
 	TestRestTemplate restTemplate;
-	
-	
+
+
 	@Test
 	public void testGetIndex() {
 		// setup
@@ -54,5 +54,17 @@ public class ExampleIntegrationTest {
 		// verify
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(actual.getBody()).isEqualTo("Hello, world!");
+	}
+
+	@Test
+	public void testGetIndex2() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<Object> entity = new HttpEntity<>(headers);
+		// exercise
+		ResponseEntity<String> actual = restTemplate.exchange("/calc?x=1&y=2", HttpMethod.GET, entity, String.class);
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getBody()).isEqualTo("3");
 	}
 }
