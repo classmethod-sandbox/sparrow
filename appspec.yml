@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+
+files:
+  - source: ./build/
+    destination: /opt/sparrow
+hooks:
+  ApplicationStop:
+    - location: scripts/applicationStop.sh
+  ApplicationStart:
+    - location: scripts/applicationStart.sh
+      timeout: 60
+  ValidateService:
+    - location: scripts/monitorService.sh
+      timeout: 300
