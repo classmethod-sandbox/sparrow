@@ -23,8 +23,13 @@ test:
         parallel: true
 
 deployment:
-  staging:
-    branch: feature\/.*
+  develop:
+    branch: develop
+    codedeploy:
+      sparrow:
+        deployment_group: sparrow-sandbox
+  feature:
+    branch: /feature\/.*/
     codedeploy:
       sparrow:
         deployment_group: sparrow-sandbox
