@@ -56,10 +56,18 @@ compileJava {
 	options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Xlint:-deprecation"
 }
 
+springBoot {
+	executable = true
+}
+
 // libraries
 repositories {
 	jcenter()
 	mavenCentral()
+}
+
+springBoot {
+	executable = true
 }
 
 dependencies {
