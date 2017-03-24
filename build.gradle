@@ -56,6 +56,10 @@ compileJava {
 	options.compilerArgs << "-Xlint:all" << "-Xlint:-processing" << "-Xlint:-deprecation"
 }
 
+springBoot {
+	executable = true
+}
+
 // libraries
 repositories {
 	jcenter()
@@ -66,6 +70,7 @@ dependencies {
 	// spring
 	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
 	// other
 	compileOnly "org.projectlombok:lombok:$lombokVersion"

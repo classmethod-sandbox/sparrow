@@ -1,0 +1,24 @@
+version: 0.0
+os: linux
+
+files:
+  - source: ./build/libs/
+    destination: /opt/sparrow
+hooks:
+  ApplicationStop:
+    - location: src/main/scripts/applicationStop.sh
+      runas: ec2-user
+  BeforeInstall:
+    - location: src/main/scripts/beforeInstall.sh
+      runas: ec2-user
+  AfterInstall:
+    - location: src/main/scripts/afterInstall.sh
+      runas: ec2-user
+  ApplicationStart:
+    - location: src/main/scripts/applicationStart.sh
+      timeout: 60
+      runas: ec2-user
+  ValidateService:
+    - location: src/main/scripts/monitorService.sh
+      timeout: 300
+      runas: ec2-user

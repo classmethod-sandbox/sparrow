@@ -21,3 +21,16 @@ test:
         parallel: true
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;:
         parallel: true
+    - ./gradlew assemble
+
+deployment:
+  develop:
+    branch: develop
+    codedeploy:
+      sparrow:
+        deployment_group: sparrow-sandbox
+  feature:
+    branch: /feature\/.*/
+    codedeploy:
+      sparrow:
+        deployment_group: sparrow-sandbox
