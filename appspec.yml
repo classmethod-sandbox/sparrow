@@ -6,19 +6,19 @@ files:
     destination: /opt/sparrow
 hooks:
   ApplicationStop:
-    - location: scripts/applicationStop.sh
+    - location: src/main/scripts/applicationStop.sh
       runas: ec2-user
   BeforeInstall:
-    - location: scripts/beforeInstall.sh
+    - location: src/main/scripts/beforeInstall.sh
       runas: ec2-user
   AfterInstall:
-    - location: scripts/afterInstall.sh
+    - location: src/main/scripts/afterInstall.sh
       runas: ec2-user
   ApplicationStart:
-    - location: scripts/applicationStart.sh
+    - location: src/main/scripts/applicationStart.sh
       timeout: 60
       runas: ec2-user
   ValidateService:
-    - location: scripts/monitorService.sh
+    - location: src/main/scripts/monitorService.sh
       timeout: 300
       runas: ec2-user
