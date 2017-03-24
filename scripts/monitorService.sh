@@ -1,11 +1,11 @@
 #!/bin/bash
 
-ret=1
-while [ ${ret} -ne 0 ]; do
+status=down
+while [ "${status}" == "UP" ]; do
     echo "trying to connect localhost:8080 ..."
-    curl -s http://localhost:8080/ -o /dev/null
-    ret=$?
+    status=$(curl -s http://localhost:8080/health | jq '.health')
     sleep 5
+    echo "current status: ${status}."
 done
 
 echo "connection succeeded."
