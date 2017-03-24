@@ -1,3 +1,3 @@
 #!/bin/bash
 
-service stop sparrow || true
+service sparrow stop || true
