@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import model.TrainingController;
+import jp.classmethod.sparrow.web.TrainingController;
 
 /**
  * Created by kunita.fumiko on 2017/03/23.
@@ -51,9 +51,9 @@ public class TrainingControllerTest {
 	
 	//POSTでリクエストボディを取得する練習
 	@Test
-	public void testGetIndex2() throws Exception {
+	public void testCharacterProcessing() throws Exception {
 		// exercise
-		mvc.perform(post("/aaa")
+		mvc.perform(post("/converter")
 			.param("convertType", "1")
 			.param("character", "aDt112dQ"))	//paramメソッドを使ってリクエストパラメータの指定
 			// verify

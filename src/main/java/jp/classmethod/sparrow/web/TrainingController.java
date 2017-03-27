@@ -17,11 +17,6 @@ package jp.classmethod.sparrow.web;
 
 import java.io.IOException;
 
-import jp.classmethod.sparrow.model.Converter;
-import jp.classmethod.sparrow.model.DoublingConverter;
-import jp.classmethod.sparrow.model.NoDigitConverter;
-import jp.classmethod.sparrow.model.Processor;
-import jp.classmethod.sparrow.model.ToLowerConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
@@ -31,6 +26,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jp.xet.sparwings.spring.web.httpexceptions.HttpBadRequestException;
+
+import jp.classmethod.sparrow.model.Converter;
+import jp.classmethod.sparrow.model.DoublingConverter;
+import jp.classmethod.sparrow.model.NoDigitConverter;
+import jp.classmethod.sparrow.model.Processor;
+import jp.classmethod.sparrow.model.ToLowerConverter;
 
 /**
  * Created by kunita.fumiko on 2017/03/22.
