@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package model;
+package jp.classmethod.sparrow.model;
+
+import org.springframework.stereotype.Service;
 
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import org.springframework.stereotype.Service;
-
 @Service
-public abstract class AbstractConverter implements Converter {
-	public final String convert(String request) throws IOException {
+public class ToLowerConverter extends AbstractConverter {
+	protected String computeStringToAppend(int c) {
+		
 		StringBuilder sb = new StringBuilder();
-		StringReader reader = new StringReader(request);
-		int c;
-		while ((c = reader.read()) != -1) {
-			String str = computeStringToAppend(c);
-			if (str != null) {
-				sb.append(str);
-			}
-		}
+		sb.append(Character.toLowerCase((char) c));
 		return sb.toString();
 	}
 	
-	protected abstract String computeStringToAppend(int c);
+	public String getDescription() {
+		return "すべて小文字に変換します";
+	}
 }

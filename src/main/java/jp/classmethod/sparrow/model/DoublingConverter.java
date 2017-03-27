@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package model;
+package jp.classmethod.sparrow.model;
 
 import org.springframework.stereotype.Service;
 
@@ -22,15 +22,16 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ToLowerConverter extends AbstractConverter {
+public class DoublingConverter extends AbstractConverter {
+	@Override
 	protected String computeStringToAppend(int c) {
-		
 		StringBuilder sb = new StringBuilder();
-		sb.append(Character.toLowerCase((char) c));
+		sb.append((char) c).append((char) c);
 		return sb.toString();
 	}
 	
+	//処理説明
 	public String getDescription() {
-		return "すべて小文字に変換します";
+		return "文字をダブらせます";
 	}
 }

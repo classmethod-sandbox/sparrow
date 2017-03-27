@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package model;
-
-import org.springframework.stereotype.Service;
+package jp.classmethod.sparrow.model;
 
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.springframework.stereotype.Service;
+
 @Service
-public class NoDigitConverter extends AbstractConverter {
-	@Override
-	protected String computeStringToAppend(int c) {
+public abstract class AbstractConverter implements Converter {
+	public final String convert(String request) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		if ((Character.isDigit(c)) == false) {
-			sb.append((char) c);
+		StringReader reader = new StringReader(request);
+		int c;
+		while ((c = reader.read()) != -1) {
+			String str = computeStringToAppend(c);
+			if (str != null) {
+				sb.append(str);
+			}
 		}
 		return sb.toString();
 	}
 	
-	public String getDescription() {
-		return "数字以外を除去します";
-	}
+	protected abstract String computeStringToAppend(int c);
 }

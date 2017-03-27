@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package model;
+package jp.classmethod.sparrow.model;
 
-import java.io.IOException;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
 
-public interface Converter {
-	String convert(String result) throws IOException;
+@Service
+public class NoDigitConverter extends AbstractConverter {
+	@Override
+	protected String computeStringToAppend(int c) {
+		StringBuilder sb = new StringBuilder();
+		if ((Character.isDigit(c)) == false) {
+			sb.append((char) c);
+		}
+		return sb.toString();
+	}
 	
-	String getDescription();
+	public String getDescription() {
+		return "数字以外を除去します";
+	}
 }
