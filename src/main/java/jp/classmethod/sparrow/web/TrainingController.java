@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package model;
+package jp.classmethod.sparrow.web;
 
 import java.io.IOException;
 
+import jp.classmethod.sparrow.model.Converter;
+import jp.classmethod.sparrow.model.DoublingConverter;
+import jp.classmethod.sparrow.model.NoDigitConverter;
+import jp.classmethod.sparrow.model.Processor;
+import jp.classmethod.sparrow.model.ToLowerConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
@@ -34,7 +39,7 @@ import jp.xet.sparwings.spring.web.httpexceptions.HttpBadRequestException;
 @Controller
 public class TrainingController {
 	//リクエストボディ情報の取得
-	@RequestMapping(value = "/aaa", method = RequestMethod.POST)
+	@RequestMapping(value = "/converter", method = RequestMethod.POST)
 	public ResponseEntity<String> getProcessedCharacter(@RequestParam String convertType,
 			@RequestParam String character) throws IOException {
 		log.debug("TrainingController");
