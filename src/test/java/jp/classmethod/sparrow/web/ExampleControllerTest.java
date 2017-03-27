@@ -70,18 +70,18 @@ public class ExampleControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
 			.andExpect(content().string("3"));
 	}
-
+	
 	//POSTでリクエストボディを取得する練習
 	@Test
 	public void testPostClac() throws Exception {
 		// exercise
 		mvc.perform(post("/calc")
-				.param("x", "1")
-				.param("y", "2"))	//paramメソッドを使ってリクエストパラメータの指定
-				// verify
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-				.andExpect(content().string("3"));
+			.param("x", "1")
+			.param("y", "2"))	//paramメソッドを使ってリクエストパラメータの指定
+			// verify
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+			.andExpect(content().string("3"));
 	}
-
+	
 }

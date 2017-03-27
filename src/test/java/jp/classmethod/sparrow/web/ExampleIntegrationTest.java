@@ -26,6 +26,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +76,12 @@ public class ExampleIntegrationTest {
 	public void testPostCalc() {
 		// setup
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Object> entity = new HttpEntity<>(headers);
+		//追加
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+		data.add("x", "1");
+		data.add("y", "2");
+		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
+		//HttpEntity<Object> entity = new HttpEntity<>(headers);
 		// exercise
 		ResponseEntity<String> actual = restTemplate.exchange("/calc", HttpMethod.POST, entity, String.class);
 		// verify
