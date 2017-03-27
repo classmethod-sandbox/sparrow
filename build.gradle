@@ -71,6 +71,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+	compile "jp.xet.spar-wings:spar-wings-httpexceptions:$sparWingsVersion"
 
 	// other
 	compileOnly "org.projectlombok:lombok:$lombokVersion"

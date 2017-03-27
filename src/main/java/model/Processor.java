@@ -1,11 +1,25 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package model;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Service;
 
 /**
  * Created by kunita.fumiko on 2017/03/22.
@@ -15,28 +29,18 @@ import java.io.InputStreamReader;
 @Service
 
 public class Processor {
-    public String run(Converter converter ,String request) throws IOException {
-
-        // これから行う処理を説明する(printDescriptionメソッドを呼び出す)
-        printDescription(converter.getDescription());
-
-        //文字列の変換処理
-        String dest = converter.convert(request);
-        //結果の出力処理
-        return dest;
-    }
-
-    private void printDescription(String description) {
-        System.out.println(description);
-    }
-
-    private String getSource() throws IOException {
-        BufferedReader r = new BufferedReader(
-                new InputStreamReader(System.in));
-        return r.readLine();
-    }
-
-//    private void resultprint(String dest) {
-//        System.out.println(dest);
-//    }
+	public String run(Converter converter, String request) throws IOException {
+		
+		// これから行う処理を説明する(printDescriptionメソッドを呼び出す)
+		printDescription(converter.getDescription());
+		
+		//文字列の変換処理
+		String dest = converter.convert(request);
+		//結果の出力処理
+		return dest;
+	}
+	
+	private void printDescription(String description) {
+		log.info(description);
+	}
 }

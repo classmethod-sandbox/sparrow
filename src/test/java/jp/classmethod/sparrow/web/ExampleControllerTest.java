@@ -59,10 +59,21 @@ public class ExampleControllerTest {
 			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
 			.andExpect(content().string("Hello, world!"));
 	}
+	
+	//	  GETでクエリを取得する練習
+	@Test
+	public void testGetCalc() throws Exception {
+		// exercise
+		mvc.perform(get("/calc?x=1&y=2"))
+			// verify
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+			.andExpect(content().string("3"));
+	}
 
 	//POSTでリクエストボディを取得する練習
 	@Test
-	public void testGetIndex2() throws Exception {
+	public void testPostClac() throws Exception {
 		// exercise
 		mvc.perform(post("/calc")
 				.param("x", "1")
@@ -73,14 +84,4 @@ public class ExampleControllerTest {
 				.andExpect(content().string("3"));
 	}
 
-//  GETでクエリを取得する練習
-//	@Test
-//	public void testGetIndex2() throws Exception {
-//		// exercise
-//		mvc.perform(get("/calc?x=1&y=2"))
-//				// verify
-//				.andExpect(status().isOk())
-//				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-//				.andExpect(content().string("3"));
-//	}
 }
