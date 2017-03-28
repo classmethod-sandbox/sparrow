@@ -81,7 +81,6 @@ public class ExampleIntegrationTest {
 		data.add("x", "1");
 		data.add("y", "2");
 		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
-		//HttpEntity<Object> entity = new HttpEntity<>(headers);
 		// exercise
 		ResponseEntity<String> actual = restTemplate.exchange("/calc", HttpMethod.POST, entity, String.class);
 		// verify
