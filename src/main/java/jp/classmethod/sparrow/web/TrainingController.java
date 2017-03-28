@@ -45,14 +45,10 @@ public class TrainingController {
 	public ResponseEntity<String> getProcessedCharacter(@RequestParam String convertType,
 			@RequestParam String character) throws IOException {
 		log.debug("TrainingController");
-		String[] request = {
-			convertType,
-			character
-		};
 		
 		//Converterの取得
 		Converter converter;
-		switch (Integer.valueOf(request[0])) {
+		switch (Integer.valueOf(convertType)) {
 			case 0:
 				converter = new DoublingConverter();
 				break;
@@ -65,7 +61,7 @@ public class TrainingController {
 			default:
 				throw new HttpBadRequestException();
 		}
-		String result = new Processor().run(converter, request[1]);
+		String result = new Processor().run(converter, character);
 		return ResponseEntity.ok(result);
 	}
 }
