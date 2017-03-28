@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import jp.classmethod.sparrow.web.TrainingController;
@@ -36,6 +37,9 @@ import jp.classmethod.sparrow.web.TrainingController;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TrainingControllerTest {
+	
+	@Spy
+	Processor processor;
 	
 	@InjectMocks
 	TrainingController sut;
