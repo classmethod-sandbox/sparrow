@@ -60,7 +60,7 @@ public class ExampleControllerTest {
 			.andExpect(content().string("Hello, world!"));
 	}
 	
-	//	  GETでクエリを取得する練習
+	// GETでクエリを取得する練習
 	@Test
 	public void testGetCalc() throws Exception {
 		// exercise
@@ -71,7 +71,7 @@ public class ExampleControllerTest {
 			.andExpect(content().string("3"));
 	}
 	
-	//POSTでリクエストボディを取得する練習
+	// POSTでリクエストボディを取得する練習
 	@Test
 	public void testPostClac() throws Exception {
 		// exercise

@@ -27,7 +27,7 @@ public class DoublingConverter extends AbstractConverter {
 		return sb.toString();
 	}
 	
-	//処理説明
+	// 処理説明
 	public String getDescription() {
 		return "文字をダブらせます";
 	}

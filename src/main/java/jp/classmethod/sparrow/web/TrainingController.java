@@ -40,13 +40,13 @@ import jp.classmethod.sparrow.model.ToLowerConverter;
 @Controller
 public class TrainingController {
 	
-	//リクエストボディ情報の取得
+	// リクエストボディ情報の取得
 	@RequestMapping(value = "/converter", method = RequestMethod.POST)
 	public ResponseEntity<String> getProcessedCharacter(@RequestParam String convertType,
 			@RequestParam String character) throws IOException {
 		log.debug("TrainingController");
 		
-		//Converterの取得
+		// Converterの取得
 		Converter converter;
 		switch (Integer.valueOf(convertType)) {
 			case 0:

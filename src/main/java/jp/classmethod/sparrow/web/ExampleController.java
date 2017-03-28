@@ -41,16 +41,15 @@ public class ExampleController {
 		return ResponseEntity.ok("Hello, world!");
 	}
 	
-	//POSTでクエリを取得する練習
+	// POSTでクエリを取得する練習
 	@RequestMapping(value = "/calc", method = RequestMethod.POST)
 	public ResponseEntity<String> calcByPost(@RequestParam int x, @RequestParam int y) {
-		
 		String result = Integer.toString(x + y);
 		return ResponseEntity.ok(result);
 	}
 	
-	//GETでクエリを取得する練習
-	//valueにはパスを記述する（？以降は書かない）
+	// GETでクエリを取得する練習
+	// valueにはパスを記述する（？以降は書かない）
 	@RequestMapping(value = "/calc", method = RequestMethod.GET)
 	public ResponseEntity<String> calcByGet(@RequestParam int x, @RequestParam int y) {
 		String result = Integer.toString(x + y);

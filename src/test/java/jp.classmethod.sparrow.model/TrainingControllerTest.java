@@ -48,13 +48,13 @@ public class TrainingControllerTest {
 		mvc = MockMvcBuilders.standaloneSetup(sut).build();
 	}
 	
-	//POSTでリクエストボディを取得する練習
+	// POSTでリクエストボディを取得する練習
 	@Test
 	public void testCharacterProcessing() throws Exception {
 		// exercise
 		mvc.perform(post("/converter")
 			.param("convertType", "1")
-			.param("character", "aDt112dQ"))	//paramメソッドを使ってリクエストパラメータの指定
+			.param("character", "aDt112dQ"))	// paramメソッドを使ってリクエストパラメータの指定
 			// verify
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))

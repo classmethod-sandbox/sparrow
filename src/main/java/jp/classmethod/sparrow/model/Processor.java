@@ -28,9 +28,9 @@ public class Processor {
 	public String run(Converter converter, String character) throws IOException {
 		// これから行う処理を説明する(printDescriptionメソッドを呼び出す)
 		printDescription(converter.getDescription());
-		//文字列の変換処理
+		// 文字列の変換処理
 		String dest = converter.convert(character);
-		//結果の出力処理
+		// 結果の出力処理
 		return dest;
 	}
 	

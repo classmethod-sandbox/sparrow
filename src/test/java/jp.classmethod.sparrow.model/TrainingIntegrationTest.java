@@ -47,7 +47,7 @@ public class TrainingIntegrationTest {
 	public void testCharacterProcessing() {
 		// setup
 		HttpHeaders headers = new HttpHeaders();
-		//追加
+		// 追加
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
 		data.add("convertType", "1");
 		data.add("character", "aDt112dQ");

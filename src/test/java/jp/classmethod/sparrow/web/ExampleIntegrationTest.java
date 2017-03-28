@@ -58,7 +58,7 @@ public class ExampleIntegrationTest {
 		assertThat(actual.getBody()).isEqualTo("Hello, world!");
 	}
 	
-	//  GETでクエリを取得する練習
+	// GETでクエリを取得する練習
 	@Test
 	public void testGetCalc() {
 		// setup
@@ -71,12 +71,12 @@ public class ExampleIntegrationTest {
 		assertThat(actual.getBody()).isEqualTo("3");
 	}
 	
-	//POSTでクエリを取得する練習
+	// POSTでクエリを取得する練習
 	@Test
 	public void testPostCalc() {
 		// setup
 		HttpHeaders headers = new HttpHeaders();
-		//追加
+		// 追加
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
 		data.add("x", "1");
 		data.add("y", "2");
