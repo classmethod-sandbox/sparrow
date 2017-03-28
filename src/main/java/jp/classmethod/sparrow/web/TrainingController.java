@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,9 @@ import jp.classmethod.sparrow.model.ToLowerConverter;
 @Slf4j
 @Controller
 public class TrainingController {
+	
+	@Autowired
+	private Processor processor;
 	
 	// リクエストボディ情報の取得
 	@RequestMapping(value = "/converter", method = RequestMethod.POST)
@@ -61,7 +65,7 @@ public class TrainingController {
 			default:
 				throw new HttpBadRequestException();
 		}
-		String result = new Processor().run(converter, character);
+		String result = processor.run(converter, character);
 		return ResponseEntity.ok(result);
 	}
 }
