@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 public interface Converter {
 	
-	String convert(String result) throws IOException;
+	String convert(String character) throws IOException;
 	
 	String getDescription();
 }

@@ -23,9 +23,9 @@ import java.io.StringReader;
 
 public abstract class AbstractConverter implements Converter {
 	
-	public final String convert(String request) throws IOException {
+	public final String convert(String character) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		StringReader reader = new StringReader(request);
+		StringReader reader = new StringReader(character);
 		int c;
 		while ((c = reader.read()) != -1) {
 			String str = computeStringToAppend(c);
