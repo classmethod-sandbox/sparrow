@@ -43,7 +43,7 @@ public class TrainingController {
 	
 	@Autowired
 	private Processor processor;
-	
+
 	// リクエストボディ情報の取得
 	@RequestMapping(value = "/converter", method = RequestMethod.POST)
 	public ResponseEntity<String> getProcessedCharacter(@RequestParam String convertType,
