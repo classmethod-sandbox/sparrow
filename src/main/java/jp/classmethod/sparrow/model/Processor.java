@@ -24,16 +24,12 @@ import org.springframework.stereotype.Service;
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
-
 @Slf4j
-@Service
-
 public class Processor {
+	
 	public String run(Converter converter, String request) throws IOException {
-		
 		// これから行う処理を説明する(printDescriptionメソッドを呼び出す)
 		printDescription(converter.getDescription());
-		
 		//文字列の変換処理
 		String dest = converter.convert(request);
 		//結果の出力処理

@@ -18,14 +18,11 @@ package jp.classmethod.sparrow.model;
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
-
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public abstract class AbstractConverter implements Converter {
+	
 	public final String convert(String request) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		StringReader reader = new StringReader(request);

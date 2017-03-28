@@ -39,6 +39,7 @@ import jp.classmethod.sparrow.model.ToLowerConverter;
 @Slf4j
 @Controller
 public class TrainingController {
+	
 	//リクエストボディ情報の取得
 	@RequestMapping(value = "/converter", method = RequestMethod.POST)
 	public ResponseEntity<String> getProcessedCharacter(@RequestParam String convertType,
@@ -65,7 +66,6 @@ public class TrainingController {
 				throw new HttpBadRequestException();
 		}
 		String result = new Processor().run(converter, request[1]);
-		
 		return ResponseEntity.ok(result);
 	}
 }

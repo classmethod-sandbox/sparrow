@@ -37,8 +37,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 public class TrainingIntegrationTest {
+	
 	@Autowired
 	TestRestTemplate restTemplate;
 	

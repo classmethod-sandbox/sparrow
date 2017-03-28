@@ -15,14 +15,11 @@
  */
 package jp.classmethod.sparrow.model;
 
-import org.springframework.stereotype.Service;
-
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
-
-@Service
 public class DoublingConverter extends AbstractConverter {
+	
 	@Override
 	protected String computeStringToAppend(int c) {
 		StringBuilder sb = new StringBuilder();

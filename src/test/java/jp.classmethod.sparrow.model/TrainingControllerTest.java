@@ -34,7 +34,6 @@ import jp.classmethod.sparrow.web.TrainingController;
 /**
  * Created by kunita.fumiko on 2017/03/23.
  */
-
 @RunWith(MockitoJUnitRunner.class)
 public class TrainingControllerTest {
 	

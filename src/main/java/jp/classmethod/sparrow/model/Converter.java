@@ -20,8 +20,8 @@ import java.io.IOException;
 /**
  * Created by kunita.fumiko on 2017/03/22.
  */
-
 public interface Converter {
+	
 	String convert(String result) throws IOException;
 	
 	String getDescription();
