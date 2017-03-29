@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.model;
+package jp.classmethod.sparrow.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +30,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import jp.classmethod.sparrow.model.Processor;
 import jp.classmethod.sparrow.web.TrainingController;
 
 /**
