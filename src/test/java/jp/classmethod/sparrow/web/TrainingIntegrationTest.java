@@ -44,7 +44,23 @@ public class TrainingIntegrationTest {
 	
 	
 	@Test
-	public void testCharacterProcessing() {
+	public void testDoublingConverter() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		// 追加
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+		data.add("convertType", "0");
+		data.add("character", "aDt112dQ");
+		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
+		// exercise
+		ResponseEntity<String> actual = restTemplate.exchange("/converter", HttpMethod.POST, entity, String.class);
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getBody()).isEqualTo("aaDDtt111122ddQQ");
+	}
+	
+	@Test
+	public void testNoDigitConverter() {
 		// setup
 		HttpHeaders headers = new HttpHeaders();
 		// 追加
@@ -57,5 +73,21 @@ public class TrainingIntegrationTest {
 		// verify
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(actual.getBody()).isEqualTo("aDtdQ");
+	}
+	
+	@Test
+	public void testToLowerConverter() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		// 追加
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+		data.add("convertType", "2");
+		data.add("character", "aDt112dQ");
+		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
+		// exercise
+		ResponseEntity<String> actual = restTemplate.exchange("/converter", HttpMethod.POST, entity, String.class);
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getBody()).isEqualTo("adt112dq");
 	}
 }
