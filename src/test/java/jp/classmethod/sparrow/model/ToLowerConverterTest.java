@@ -15,34 +15,34 @@
  */
 package jp.classmethod.sparrow.model;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 /**
- * Created by kunita.fumiko on 2017/03/28.
+ * Created by kunita.fumiko on 2017/03/29.
  */
-public class DoublingConverterTest {
+public class ToLowerConverterTest {
 	
-	DoublingConverter sut = new DoublingConverter();
+	ToLowerConverter sut = new ToLowerConverter();
 	
 	
 	@Test
-	public void testDoublingConverter() throws Exception {
+	public void testTolowerConverter() throws Exception {
 		// setup
-		String strChar = "Qx3";
+		String strChar = "Ayt3WR";
 		// exercise
 		String actual = sut.convert(strChar);
 		// verify
-		assertThat(actual, is("QQxx33"));
+		assertThat(actual, is("ayt3wr"));
 	}
 	
 	@Test
-	public void testGetDescription() throws Exception {
+	public void testDescription() throws Exception {
 		// exercise
 		String actual = sut.getDescription();
-		// verify
-		assertThat(actual, is("文字をダブらせます"));
+		//verify
+		assertThat(actual, is("すべて小文字に変換します"));
 	}
 }
