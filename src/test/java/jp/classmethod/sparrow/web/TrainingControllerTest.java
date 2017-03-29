@@ -31,7 +31,6 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import jp.classmethod.sparrow.model.Processor;
-import jp.classmethod.sparrow.web.TrainingController;
 
 /**
  * Created by kunita.fumiko on 2017/03/23.
