@@ -42,7 +42,7 @@ import jp.classmethod.sparrow.model.ToLowerConverter;
 public class TrainingController {
 	
 	@Autowired
-	private Processor processor;
+	Processor processor;
 	
 	
 	// リクエストボディ情報の取得
