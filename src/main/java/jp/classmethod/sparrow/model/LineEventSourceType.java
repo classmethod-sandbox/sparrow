@@ -15,9 +15,7 @@
  */
 package jp.classmethod.sparrow.model;
 
-import java.util.Locale;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,12 +24,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @since version
  */
 public enum LineEventSourceType {
-	USER,
-	GROUP,
-	ROOM;
-	
-	@JsonCreator
-	public static LineEventSourceType create(String type) {
-		return LineEventSourceType.valueOf(type.toUpperCase(Locale.JAPAN));
-	}
+	@JsonProperty("user") USER,
+	@JsonProperty("group") GROUP,
+	@JsonProperty("room") ROOM;
+
 }

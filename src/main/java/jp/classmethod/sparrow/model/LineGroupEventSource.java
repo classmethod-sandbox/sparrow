@@ -17,6 +17,8 @@ package jp.classmethod.sparrow.model;
 
 import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by mochizukimasao on 2017/03/30.
  *
@@ -28,11 +30,7 @@ public class LineGroupEventSource implements LineEventSource {
 	
 	private final LineEventSourceType type;
 	
-	private final String groupId;
+	@JsonProperty("groupId")
+	private final String id;
 	
-	
-	@Override
-	public String getId() {
-		return groupId;
-	}
 }
