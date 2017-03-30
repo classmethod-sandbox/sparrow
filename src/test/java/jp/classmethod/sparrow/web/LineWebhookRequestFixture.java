@@ -17,6 +17,7 @@ package jp.classmethod.sparrow.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
@@ -30,9 +31,7 @@ import jp.classmethod.sparrow.model.LineEventFixture;
 public class LineWebhookRequestFixture {
 	
 	public static LineWebhookRequest createRequest() {
-		Collection<LineEvent> events = new ArrayList<>();
 		LineEvent e1 = LineEventFixture.createLineUserEvent();
-		events.add(e1);
-		return new LineWebhookRequest(events);
+		return new LineWebhookRequest(Collections.singletonList(e1));
 	}
 }

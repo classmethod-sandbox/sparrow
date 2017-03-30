@@ -88,8 +88,13 @@ public class LineEventTest {
 	
 	@Test
 	public void testJson2Value() throws Exception {
+		//setup
 		LineEvent expect = LineEventFixture.createLineUserEvent();
+		
+		// exercise
 		ObjectContent<LineEvent> actual = json.parse(USER_EVENT_JSON);
+		
+		//verify
 		actual.assertThat().isEqualTo(expect);
 	}
 	
