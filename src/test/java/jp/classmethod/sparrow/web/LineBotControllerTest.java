@@ -26,9 +26,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jp.classmethod.sparrow.model.LineBotService;
 
 /**
  * Test for {@link ExampleController}.
@@ -41,6 +44,9 @@ public class LineBotControllerTest {
 	
 	@InjectMocks
 	LineBotController sut;
+	
+	@Mock
+	LineBotService botService;
 	
 	private MockMvc mvc;
 	
