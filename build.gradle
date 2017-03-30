@@ -91,7 +91,7 @@ dependencies {
 	// testing
 	testCompileOnly "org.projectlombok:lombok:$lombokVersion" // http://qiita.com/gillax/items/1cbcff003384087f2db1
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-	testCompile "org.assertj:assertj-core:$assertjVersion"
+	testCompile "org.assertj:assertj-core"
 	testCompile "com.jayway.jsonpath:json-path-assert:$jsonPathAssertVersion"
 }
 
