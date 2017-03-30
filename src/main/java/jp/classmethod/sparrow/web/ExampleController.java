@@ -86,5 +86,4 @@ public class ExampleController {
 		map.put("multiply", y / x);
 		return map;
 	}
-	
 }
