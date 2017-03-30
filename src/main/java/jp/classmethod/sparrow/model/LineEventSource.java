@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.configprops;
+package jp.classmethod.sparrow.model;
 
-import lombok.Data;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,13 +26,31 @@ import org.springframework.stereotype.Component;
  * @author mochizukimasao
  * @since version
  */
-
-@Data
-@Component
-@ConfigurationProperties(prefix = "sparrow.bot")
-public class LineBotConfigurationProperties {
+@RequiredArgsConstructor
+@ToString
+@EqualsAndHashCode
+public class LineEventSource {
 	
-	private String channelToken;
+	@Getter
+	private final String type;
 	
-	private String channelSecret;
+	private final String userId;
+	
+	private final String groupId;
+	
+	private final String roomId;
+	
+	
+	public String getId() {
+		switch (type) {
+			case "user":
+				return userId;
+			case "group":
+				return groupId;
+			case "room":
+				return roomId;
+			default:
+				throw new IllegalStateException("No matching Source ID found");
+		}
+	}
 }

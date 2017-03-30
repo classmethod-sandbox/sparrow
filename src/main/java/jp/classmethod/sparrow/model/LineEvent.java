@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.configprops;
+package jp.classmethod.sparrow.model;
+
+import java.util.Map;
 
 import lombok.Data;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -28,11 +27,19 @@ import org.springframework.stereotype.Component;
  */
 
 @Data
-@Component
-@ConfigurationProperties(prefix = "sparrow.bot")
-public class LineBotConfigurationProperties {
+public class LineEvent {
 	
-	private String channelToken;
+	private final String type;
 	
-	private String channelSecret;
+	private final long timestamp;
+	
+	private final LineEventSource source;
+	
+	private final LineMessage message;
+	
+	private final String replyToken;
+	
+	private final Map<String, String> postBack;
+	
+	private final Map<String, String> beacon;
 }

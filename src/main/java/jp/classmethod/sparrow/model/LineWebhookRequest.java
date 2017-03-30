@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.configprops;
+package jp.classmethod.sparrow.model;
+
+import java.util.Collection;
 
 import lombok.Data;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,13 +25,8 @@ import org.springframework.stereotype.Component;
  * @author mochizukimasao
  * @since version
  */
-
 @Data
-@Component
-@ConfigurationProperties(prefix = "sparrow.bot")
-public class LineBotConfigurationProperties {
+public class LineWebhookRequest {
 	
-	private String channelToken;
-	
-	private String channelSecret;
+	private final Collection<LineEvent> events;
 }
