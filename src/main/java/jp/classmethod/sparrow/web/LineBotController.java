@@ -17,11 +17,14 @@ package jp.classmethod.sparrow.web;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import jp.classmethod.sparrow.model.LineBotService;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -34,9 +37,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/sparrow")
 public class LineBotController {
 	
+	@Autowired
+	LineBotService botService;
+	
+	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
-		webhookRequest.getEvents().forEach(event -> log.info(event.toString()));
+		webhookRequest.getEvents().forEach(event -> {
+			log.info(event.toString());
+			botService.echoBot(event);
+		});
+		
 		return ResponseEntity.ok("");
 	}
 }

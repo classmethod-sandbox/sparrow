@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.web;
+package jp.classmethod.sparrow.model;
 
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-import jp.classmethod.sparrow.model.LineEvent;
-import jp.classmethod.sparrow.model.LineEventFixture;
+import lombok.Data;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,10 +26,10 @@ import jp.classmethod.sparrow.model.LineEventFixture;
  * @author mochizukimasao
  * @since version
  */
-public class LineWebhookRequestFixture {
+@Data
+public class LineTextMessage {
 	
-	public static LineWebhookRequest createRequest() {
-		LineEvent e1 = LineEventFixture.createLineUserEvent();
-		return new LineWebhookRequest(Collections.singletonList(e1));
-	}
+	private final String replyToken;
+	
+	private final List<Map<String, String>> messages;
 }

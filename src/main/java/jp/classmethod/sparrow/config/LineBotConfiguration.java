@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.web;
+package jp.classmethod.sparrow.config;
 
-import java.util.Collections;
+import org.springframework.context.annotation.Configuration;
 
-import jp.classmethod.sparrow.model.LineEvent;
-import jp.classmethod.sparrow.model.LineEventFixture;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,10 +25,10 @@ import jp.classmethod.sparrow.model.LineEventFixture;
  * @author mochizukimasao
  * @since version
  */
-public class LineWebhookRequestFixture {
+@Configuration
+public class LineBotConfiguration {
 	
-	public static LineWebhookRequest createRequest() {
-		LineEvent e1 = LineEventFixture.createLineUserEvent();
-		return new LineWebhookRequest(Collections.singletonList(e1));
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
 }
