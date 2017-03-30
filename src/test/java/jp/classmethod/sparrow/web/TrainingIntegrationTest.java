@@ -33,58 +33,61 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Integration test.
- *
- * @author daisuke
- * @since #version#
+ * Created by kunita.fumiko on 2017/03/27.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ExampleIntegrationTest {
+public class TrainingIntegrationTest {
 	
 	@Autowired
 	TestRestTemplate restTemplate;
 	
 	
 	@Test
-	public void testGetIndex() {
-		// setup
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Object> entity = new HttpEntity<>(headers);
-		// exercise
-		ResponseEntity<String> actual = restTemplate.exchange("/", HttpMethod.GET, entity, String.class);
-		// verify
-		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(actual.getBody()).isEqualTo("Hello, world!");
-	}
-	
-	// GETでクエリを取得する練習
-	@Test
-	public void testGetCalc() {
-		// setup
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Object> entity = new HttpEntity<>(headers);
-		// exercise
-		ResponseEntity<String> actual = restTemplate.exchange("/calc?x=1&y=2", HttpMethod.GET, entity, String.class);
-		// verify
-		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(actual.getBody()).isEqualTo("3");
-	}
-	
-	// POSTでクエリを取得する練習
-	@Test
-	public void testPostCalc() {
+	public void testDoublingConverter() {
 		// setup
 		HttpHeaders headers = new HttpHeaders();
 		// 追加
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-		data.add("x", "1");
-		data.add("y", "2");
+		data.add("convertType", "0");
+		data.add("character", "aDt112dQ");
 		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
 		// exercise
-		ResponseEntity<String> actual = restTemplate.exchange("/calc", HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> actual = restTemplate.exchange("/converter", HttpMethod.POST, entity, String.class);
 		// verify
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(actual.getBody()).isEqualTo("3");
+		assertThat(actual.getBody()).isEqualTo("aaDDtt111122ddQQ");
+	}
+	
+	@Test
+	public void testNoDigitConverter() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		// 追加
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+		data.add("convertType", "1");
+		data.add("character", "aDt112dQ");
+		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
+		// exercise
+		ResponseEntity<String> actual = restTemplate.exchange("/converter", HttpMethod.POST, entity, String.class);
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getBody()).isEqualTo("aDtdQ");
+	}
+	
+	@Test
+	public void testToLowerConverter() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		// 追加
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+		data.add("convertType", "2");
+		data.add("character", "aDt112dQ");
+		HttpEntity<Object> entity = new HttpEntity<>(data, headers);
+		// exercise
+		ResponseEntity<String> actual = restTemplate.exchange("/converter", HttpMethod.POST, entity, String.class);
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getBody()).isEqualTo("adt112dq");
 	}
 }

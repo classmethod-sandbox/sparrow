@@ -15,7 +15,6 @@
  */
 package jp.classmethod.sparrow.web;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,19 +27,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import jp.classmethod.sparrow.model.Processor;
+
 /**
- * Test for {@link ExampleController}.
- *
- * @author daisuke
- * @since #version#
+ * Created by kunita.fumiko on 2017/03/23.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ExampleControllerTest {
+public class TrainingControllerTest {
+	
+	@Spy
+	Processor processor;
 	
 	@InjectMocks
-	ExampleController sut;
+	TrainingController sut;
 	
 	private MockMvc mvc;
 	
@@ -50,38 +52,16 @@ public class ExampleControllerTest {
 		mvc = MockMvcBuilders.standaloneSetup(sut).build();
 	}
 	
-	@Test
-	public void testGetIndex() throws Exception {
-		// exercise
-		mvc.perform(get("/"))
-			// verify
-			.andExpect(status().isOk())
-			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-			.andExpect(content().string("Hello, world!"));
-	}
-	
-	// GETでクエリを取得する練習
-	@Test
-	public void testGetCalc() throws Exception {
-		// exercise
-		mvc.perform(get("/calc?x=1&y=2"))
-			// verify
-			.andExpect(status().isOk())
-			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-			.andExpect(content().string("3"));
-	}
-	
 	// POSTでリクエストボディを取得する練習
 	@Test
-	public void testPostClac() throws Exception {
+	public void testCharacterProcessing() throws Exception {
 		// exercise
-		mvc.perform(post("/calc")
-			.param("x", "1")
-			.param("y", "2"))	//paramメソッドを使ってリクエストパラメータの指定
+		mvc.perform(post("/converter")
+			.param("convertType", "1")
+			.param("character", "aDt112dQ"))	// paramメソッドを使ってリクエストパラメータの指定
 			// verify
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-			.andExpect(content().string("3"));
+			.andExpect(content().string("aDtdQ"));
 	}
-	
 }
