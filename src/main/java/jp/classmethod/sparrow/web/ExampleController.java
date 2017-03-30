@@ -15,13 +15,21 @@
  */
 package jp.classmethod.sparrow.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * サンプルのcontroller実装。
@@ -51,8 +59,32 @@ public class ExampleController {
 	// GETでクエリを取得する練習
 	// valueにはパスを記述する（？以降は書かない）
 	@RequestMapping(value = "/calc", method = RequestMethod.GET)
-	public ResponseEntity<String> calcByGet(@RequestParam int x, @RequestParam int y) {
+	public ResponseEntity<?> calcByGet(@RequestParam int x, @RequestParam int y) {
 		String result = Integer.toString(x + y);
 		return ResponseEntity.ok(result);
 	}
+	
+	// Json
+	@RequestMapping(value = "/calc-json", method = RequestMethod.GET)
+	public ResponseEntity<String> calcJson(@RequestParam int x, @RequestParam int y)
+			throws JsonProcessingException {
+		
+		log.debug("calcJson");
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(getMap(x, y));
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("content-type", "application/json;" + "charset=utf-8");
+		
+		return new ResponseEntity<String>(json, headers, HttpStatus.OK);
+	}
+	
+	public Map<String, Integer> getMap(int x, int y) {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		map.put("add", x + y);
+		map.put("subtract", x - y);
+		map.put("multiply", y / x);
+		return map;
+	}
+	
 }
