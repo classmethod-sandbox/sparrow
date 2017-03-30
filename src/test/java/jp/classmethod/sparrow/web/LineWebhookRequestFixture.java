@@ -15,13 +15,11 @@
  */
 package jp.classmethod.sparrow.web;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import jp.classmethod.sparrow.model.LineEvent;
+import jp.classmethod.sparrow.model.LineEventFixture;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -29,14 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @author mochizukimasao
  * @since version
  */
-@RestController
-@Slf4j
-@RequestMapping(path = "/sparrow")
-public class LineBotController {
+public class LineWebhookRequestFixture {
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
-		webhookRequest.getEvents().forEach(event -> log.info(event.toString()));
-		return ResponseEntity.ok("");
+	public static LineWebhookRequest createRequest() {
+		Collection<LineEvent> events = new ArrayList<>();
+		LineEvent e1 = LineEventFixture.createLineUserEvent();
+		events.add(e1);
+		return new LineWebhookRequest(events);
 	}
 }

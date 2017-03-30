@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.web;
+package jp.classmethod.sparrow.model;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.Data;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -29,14 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @author mochizukimasao
  * @since version
  */
-@RestController
-@Slf4j
-@RequestMapping(path = "/sparrow")
-public class LineBotController {
+@Data
+public class LineGroupEventSource implements LineEventSource {
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
-		webhookRequest.getEvents().forEach(event -> log.info(event.toString()));
-		return ResponseEntity.ok("");
+	private final LineEventSourceType type;
+	
+	private final String groupId;
+	
+	
+	@Override
+	public String getId() {
+		return groupId;
 	}
 }

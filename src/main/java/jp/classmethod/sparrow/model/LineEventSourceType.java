@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.web;
+package jp.classmethod.sparrow.model;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Locale;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -29,14 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @author mochizukimasao
  * @since version
  */
-@RestController
-@Slf4j
-@RequestMapping(path = "/sparrow")
-public class LineBotController {
+public enum LineEventSourceType {
+	USER,
+	GROUP,
+	ROOM;
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
-		webhookRequest.getEvents().forEach(event -> log.info(event.toString()));
-		return ResponseEntity.ok("");
+	@JsonCreator
+	public static LineEventSourceType create(String type) {
+		return LineEventSourceType.valueOf(type.toUpperCase(Locale.JAPAN));
 	}
 }

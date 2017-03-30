@@ -15,10 +15,8 @@
  */
 package jp.classmethod.sparrow.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -26,31 +24,16 @@ import lombok.ToString;
  * @author mochizukimasao
  * @since version
  */
-@RequiredArgsConstructor
-@ToString
-@EqualsAndHashCode
-public class LineEventSource {
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonSubTypes({
+	@JsonSubTypes.Type(value = LineUserEventSource.class, name = "user"),
+	@JsonSubTypes.Type(value = LineGroupEventSource.class, name = "group"),
+	@JsonSubTypes.Type(value = LineRoomEventSource.class, name = "room")
+})
+public interface LineEventSource {
 	
-	@Getter
-	private final String type;
+	String getId();
 	
-	private final String userId;
-	
-	private final String groupId;
-	
-	private final String roomId;
-	
-	
-	public String getId() {
-		switch (type) {
-			case "user":
-				return userId;
-			case "group":
-				return groupId;
-			case "room":
-				return roomId;
-			default:
-				throw new IllegalStateException("No matching Source ID found");
-		}
-	}
+	LineEventSourceType getType();
 }

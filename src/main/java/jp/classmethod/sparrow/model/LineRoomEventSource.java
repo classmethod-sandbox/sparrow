@@ -15,8 +15,6 @@
  */
 package jp.classmethod.sparrow.model;
 
-import java.util.Collection;
-
 import lombok.Data;
 
 /**
@@ -26,7 +24,15 @@ import lombok.Data;
  * @since version
  */
 @Data
-public class LineWebhookRequest {
+public class LineRoomEventSource implements LineEventSource {
 	
-	private final Collection<LineEvent> events;
+	private final LineEventSourceType type;
+	
+	private final String roomId;
+	
+	
+	@Override
+	public String getId() {
+		return roomId;
+	}
 }
