@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.xet.sparwings.spring.web.httpexceptions.HttpInternalServerErrorException;
+
 /**
  * サンプルのcontroller実装。
  *
@@ -59,23 +61,25 @@ public class ExampleController {
 	// GETでクエリを取得する練習
 	// valueにはパスを記述する（？以降は書かない）
 	@RequestMapping(value = "/calc", method = RequestMethod.GET)
-	public ResponseEntity<?> calcByGet(@RequestParam int x, @RequestParam int y) {
+	public ResponseEntity<String> calcByGet(@RequestParam int x, @RequestParam int y) {
 		String result = Integer.toString(x + y);
 		return ResponseEntity.ok(result);
 	}
 	
 	// Json
 	@RequestMapping(value = "/calc-json", method = RequestMethod.GET)
-	public ResponseEntity<String> calcJson(@RequestParam int x, @RequestParam int y)
-			throws JsonProcessingException {
+	public ResponseEntity<String> calcJson(@RequestParam int x, @RequestParam int y) {
 		
 		log.debug("calcJson");
-		ObjectMapper mapper = new ObjectMapper();
-		String json = mapper.writeValueAsString(getMap(x, y));
-		
+		String json;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			json = mapper.writeValueAsString(getMap(x, y));
+		} catch (JsonProcessingException e) {
+			throw new HttpInternalServerErrorException(e);
+		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("content-type", "application/json;" + "charset=utf-8");
-		
+		headers.add("content-type", "application/json;charset=utf-8");
 		return new ResponseEntity<String>(json, headers, HttpStatus.OK);
 	}
 	
