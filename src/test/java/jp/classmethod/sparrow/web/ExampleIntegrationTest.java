@@ -15,7 +15,9 @@
  */
 package jp.classmethod.sparrow.web;
 
+import static com.jayway.jsonassert.JsonAssert.with;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +26,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
@@ -86,5 +89,23 @@ public class ExampleIntegrationTest {
 		// verify
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(actual.getBody()).isEqualTo("3");
+	}
+	
+	@Test
+	public void testGetCalcReturnsJson() {
+		// setup
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<Object> entity = new HttpEntity<>(headers);
+		// exercise
+		ResponseEntity<String> actual =
+				restTemplate.exchange("/calc-json?x=1&y=2", HttpMethod.GET, entity, String.class);
+		
+		// verify
+		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(actual.getHeaders().getContentType().isCompatibleWith(MediaType.APPLICATION_JSON)).isTrue();
+		// example: {"add":3, "subtract":-1, "multiply":2}
+		with(actual.getBody()).assertThat("$.add", is(3));
+		with(actual.getBody()).assertThat("$.subtract", is(-1));
+		with(actual.getBody()).assertThat("$.multiply", is(2));
 	}
 }
