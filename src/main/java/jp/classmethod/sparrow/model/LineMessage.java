@@ -15,7 +15,10 @@
  */
 package jp.classmethod.sparrow.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -24,25 +27,28 @@ import lombok.Data;
  * @since version
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
+@NoArgsConstructor
 public class LineMessage {
 	
-	private final String type;
+	private String type;
 	
-	private final String id;
+	private String id;
 	
-	private final String text;
+	private String text;
 	
 	// Location message
-	private final String title;
+	private String title;
 	
-	private final String address;
+	private String address;
 	
-	private final double latitude;
+	private double latitude;
 	
-	private final double longitude;
+	private double longitude;
 	
 	// Sticker message
-	private final String packageId;
+	private String packageId;
 	
-	private final String stickerId;
+	private String stickerId;
 }

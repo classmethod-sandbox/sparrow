@@ -69,7 +69,7 @@ public class LineBotServiceTest {
 	@Mock
 	private ObjectMapper objectMapper;
 	
-	private LineTextMessage lineTextMessage;
+	private LineMessageAPIRequest request;
 	
 	@InjectMocks
 	private LineBotService sut;
@@ -77,9 +77,10 @@ public class LineBotServiceTest {
 	
 	@Before
 	public void setup() throws Exception {
-		Map<String, String> message = new HashMap<>();
-		message.put("text", "text body");
-		lineTextMessage = spy(new LineTextMessage("fffff", Collections.singletonList(message)));
+		LineMessage message = new LineMessage();
+		message.setType("test");
+		message.setText("text body");
+		request = spy(new LineMessageAPIRequest("fffff", Collections.singletonList(message)));
 		when(objectMapper.writeValueAsString(any())).thenReturn("");
 		
 	}

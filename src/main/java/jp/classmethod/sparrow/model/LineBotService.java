@@ -85,16 +85,16 @@ public class LineBotService {
 				"Bearer " + configurationProperties.getChannelToken()));
 		
 		// body
-		Map<String, String> message = new HashMap<>();
-		message.put("type", "text");
-		message.put("text", text);
-		LineTextMessage body = new LineTextMessage(replyToken, Collections.singletonList(message));
+		LineMessage lineMessage = new LineMessage();
+		lineMessage.setType("text");
+		lineMessage.setText(text);
+		LineMessageAPIRequest request = new LineMessageAPIRequest(replyToken, Collections.singletonList(lineMessage));
 		StringEntity entity = new StringEntity(
-				objectMapper.writeValueAsString(body),
+				objectMapper.writeValueAsString(request),
 				StandardCharsets.UTF_8);
 		postRequest.setEntity(entity);
 		
-		log.info("{}", body.toString());
+		log.info("{}", lineMessage.toString());
 		return postRequest;
 	}
 	
