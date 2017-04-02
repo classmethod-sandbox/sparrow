@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
  * @author mochizukimasao
  * @since version
  */
-
 @Data
 @Component
 @ConfigurationProperties(prefix = "sparrow.bot")
