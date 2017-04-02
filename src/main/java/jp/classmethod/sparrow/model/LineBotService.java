@@ -16,6 +16,7 @@
 package jp.classmethod.sparrow.model;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -68,7 +69,7 @@ public class LineBotService {
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != 200) {
 				log.error("failed to send message: {} : {}", statusCode,
-						IOUtils.toString(response.getEntity().getContent()));
+						EntityUtils.toString(response.getEntity()));
 				throw new LineBotAPIException("API request did not succeed.");
 			}
 		} catch (IOException e) {
@@ -91,10 +92,10 @@ public class LineBotService {
 		LineTextMessage body = new LineTextMessage(replyToken, Collections.singletonList(message));
 		StringEntity entity = new StringEntity(
 				objectMapper.writeValueAsString(body),
-				"UTF-8");
+				StandardCharsets.UTF_8);
 		postRequest.setEntity(entity);
 		
-		log.info("{}", IOUtils.toString(postRequest.getEntity().getContent()));
+		log.info("{}", body.toString());
 		return postRequest;
 	}
 	
