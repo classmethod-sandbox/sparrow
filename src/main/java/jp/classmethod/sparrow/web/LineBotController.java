@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import jp.classmethod.sparrow.model.LineBotAPIException;
 import jp.classmethod.sparrow.model.LineBotService;
 
 /**
@@ -45,7 +46,13 @@ public class LineBotController {
 	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
 		webhookRequest.getEvents().forEach(event -> {
 			log.info(event.toString());
-			botService.echoBot(event);
+			try {
+				botService.echoBot(event);
+			} catch (LineBotAPIException e) {
+				// Webhook requestには200を返せというドキュメント記載があるので
+				// ここでは500を返さないようにしている
+				log.error("LINE API call failed : ", e);
+			}
 		});
 		
 		return ResponseEntity.ok("");

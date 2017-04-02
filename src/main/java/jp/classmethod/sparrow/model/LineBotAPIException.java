@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+package jp.classmethod.sparrow.model;
 
 /**
- * Created by mochizukimasao on 2017/03/30.
+ * Created by mochizukimasao on 2017/04/02.
  *
  * @author mochizukimasao
  * @since version
  */
-
-@Configuration
-public class LineBotConfiguration {
+@SuppressWarnings("serial")
+public class LineBotAPIException extends RuntimeException {
 	
-	@Bean
-	@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-	public CloseableHttpClient httpClient() {
-		return HttpClients.createSystem();
+	public LineBotAPIException() {
+		super();
 	}
 	
+	public LineBotAPIException(String message) {
+		super(message);
+	}
+	
+	public LineBotAPIException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	public LineBotAPIException(Throwable cause) {
+		super(cause);
+	}
+	
+	protected LineBotAPIException(String message, Throwable cause, boolean enableSuppression,
+			boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 }

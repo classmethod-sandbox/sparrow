@@ -16,6 +16,7 @@
 package jp.classmethod.sparrow.configprops;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -30,9 +31,12 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "sparrow.bot")
+@Accessors(chain = true)
 public class LineBotConfigurationProperties {
 	
 	private String channelToken;
 	
 	private String channelSecret;
+	
+	private String messageApiEndpoint;
 }

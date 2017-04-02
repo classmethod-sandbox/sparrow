@@ -25,7 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public enum LineEventSourceType {
 	@JsonProperty("user") USER,
+	
 	@JsonProperty("group") GROUP,
+	
 	@JsonProperty("room") ROOM;
 
 }

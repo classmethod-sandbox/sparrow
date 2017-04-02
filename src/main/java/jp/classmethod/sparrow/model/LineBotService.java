@@ -30,7 +30,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,40 +53,49 @@ public class LineBotService {
 	@Autowired
 	ObjectMapper objectMapper;
 	
-	private static final String MESSAGE_API_ENDPOINT = "https://api.line.me/v2/bot/message/reply";
+	@Autowired
+	CloseableHttpClient httpClient;
 	
 	
 	public void echoBot(LineEvent event) {
-		if (isTextMessage(event)) {
-			
-			HttpPost postRequest = new HttpPost(MESSAGE_API_ENDPOINT);
-			postRequest.setHeader(new BasicHeader("Content-Type", "application/json"));
-			postRequest.setHeader(new BasicHeader("Authorization",
-					"Bearer " + configurationProperties.getChannelToken()));
-			
-			try (CloseableHttpClient httpClient = HttpClients.createSystem()) {
-				Map<String, String> message = new HashMap<>();
-				message.put("type", "text");
-				message.put("text", event.getMessage().getText());
-				LineTextMessage body = new LineTextMessage(event.getReplyToken(), Collections.singletonList(message));
-				
-				StringEntity entity = new StringEntity(
-						objectMapper.writeValueAsString(body),
-						"UTF-8");
-				postRequest.setEntity(entity);
-				log.info("{}", IOUtils.toString(postRequest.getEntity().getContent()));
-				CloseableHttpResponse response = httpClient.execute(postRequest);
-				
-				int statusCode = response.getStatusLine().getStatusCode();
-				if (statusCode != 200) {
-					log.error("failed to send message: {} : {}", statusCode,
-							IOUtils.toString(response.getEntity().getContent()));
-				}
-				
-			} catch (IOException e) {
-				log.error("error in LINE bot API call", e);
-			}
+		if (isTextMessage(event) == false) {
+			return;
 		}
+		try {
+			HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), event.getMessage().getText());
+			CloseableHttpResponse response = httpClient.execute(postRequest);
+			
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode != 200) {
+				log.error("failed to send message: {} : {}", statusCode,
+						IOUtils.toString(response.getEntity().getContent()));
+				throw new LineBotAPIException("API request did not succeed.");
+			}
+		} catch (IOException e) {
+			throw new LineBotAPIException("I/O error in LINE bot API call", e);
+		}
+	}
+	
+	private HttpPost buildMessageAPIRequest(String replyToken, String text) throws IOException {
+		HttpPost postRequest = new HttpPost(configurationProperties.getMessageApiEndpoint());
+		
+		// header
+		postRequest.setHeader(new BasicHeader("Content-Type", "application/json"));
+		postRequest.setHeader(new BasicHeader("Authorization",
+				"Bearer " + configurationProperties.getChannelToken()));
+		
+		// body
+		Map<String, String> message = new HashMap<>();
+		message.put("type", "text");
+		message.put("text", text);
+		LineTextMessage body = new LineTextMessage(replyToken, Collections.singletonList(message));
+		StringEntity entity = new StringEntity(
+				objectMapper.writeValueAsString(body),
+				"UTF-8");
+		postRequest.setEntity(entity);
+		
+		log.info("{}", IOUtils.toString(postRequest.getEntity().getContent()));
+		return postRequest;
 	}
 	
 	private boolean isTextMessage(LineEvent event) {
