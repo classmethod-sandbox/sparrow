@@ -24,24 +24,11 @@ package jp.classmethod.sparrow.model;
 @SuppressWarnings("serial")
 public class LineBotAPIException extends RuntimeException {
 	
-	public LineBotAPIException() {
-		super();
-	}
-	
 	public LineBotAPIException(String message) {
 		super(message);
 	}
 	
 	public LineBotAPIException(String message, Throwable cause) {
 		super(message, cause);
-	}
-	
-	public LineBotAPIException(Throwable cause) {
-		super(cause);
-	}
-	
-	protected LineBotAPIException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }

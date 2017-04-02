@@ -68,6 +68,7 @@ public class LineBotService {
 						EntityUtils.toString(response.getEntity()));
 				throw new LineBotAPIException("API request did not succeed.");
 			}
+			response.close();
 		} catch (IOException e) {
 			throw new LineBotAPIException("I/O error in LINE bot API call", e);
 		}

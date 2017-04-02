@@ -44,18 +44,18 @@ public class LineBotController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
-		webhookRequest.getEvents().forEach(event -> {
-			log.info(event.toString());
-			try {
-				botService.echoBot(event);
-			} catch (LineBotAPIException e) {
-				// Webhook requestには200を返せというドキュメント記載があるので
-				// ここでは500を返さないようにしている
-				log.error("LINE API call failed : ", e);
-			} catch (Exception e) {
-				log.error("cannot handle error : ", e);
-			}
-		});
+		webhookRequest.getEvents()
+			.stream()
+			.peek(event -> log.info("{}", event))
+			.forEach(event -> {
+				try {
+					botService.echoBot(event);
+				} catch (LineBotAPIException e) {
+					// Webhook requestには200を返せというドキュメント記載があるので
+					// ここでは500を返さないようにしている
+					log.error("LINE API call failed : ", e);
+				}
+			});
 		
 		return ResponseEntity.ok("");
 	}
