@@ -15,6 +15,7 @@
  */
 package jp.classmethod.sparrow.web;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,10 @@ import jp.classmethod.sparrow.model.LineBotService;
 @RestController
 @Slf4j
 @RequestMapping(path = "/sparrow")
+@RequiredArgsConstructor
 public class LineBotController {
 	
-	@Autowired
-	LineBotService botService;
+	private final LineBotService botService;
 	
 	
 	@RequestMapping(method = RequestMethod.POST)

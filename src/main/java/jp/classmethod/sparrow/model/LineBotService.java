@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,16 +47,14 @@ import jp.classmethod.sparrow.configprops.LineBotConfigurationProperties;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LineBotService {
 	
-	@Autowired
-	LineBotConfigurationProperties configurationProperties;
+	private final LineBotConfigurationProperties configurationProperties;
 	
-	@Autowired
-	ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 	
-	@Autowired
-	CloseableHttpClient httpClient;
+	private final CloseableHttpClient httpClient;
 	
 	
 	public void echoBot(LineEvent event) {
