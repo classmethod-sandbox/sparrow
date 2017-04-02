@@ -28,9 +28,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since version
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LineMessage {
 	
 	private LineMessageType type;
