@@ -52,6 +52,8 @@ public class LineBotController {
 				// Webhook requestには200を返せというドキュメント記載があるので
 				// ここでは500を返さないようにしている
 				log.error("LINE API call failed : ", e);
+			} catch (Exception e) {
+				log.error("cannot handle error : ", e);
 			}
 		});
 		
