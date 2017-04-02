@@ -26,8 +26,6 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -78,7 +76,7 @@ public class LineBotServiceTest {
 	@Before
 	public void setup() throws Exception {
 		LineMessage message = new LineMessage();
-		message.setType("test");
+		message.setType(LineMessageType.TEXT);
 		message.setText("text body");
 		request = spy(new LineMessageAPIRequest("fffff", Collections.singletonList(message)));
 		when(objectMapper.writeValueAsString(any())).thenReturn("");

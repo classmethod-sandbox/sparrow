@@ -18,13 +18,10 @@ package jp.classmethod.sparrow.model;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -86,7 +83,7 @@ public class LineBotService {
 		
 		// body
 		LineMessage lineMessage = new LineMessage();
-		lineMessage.setType("text");
+		lineMessage.setType(LineMessageType.TEXT);
 		lineMessage.setText(text);
 		LineMessageAPIRequest request = new LineMessageAPIRequest(replyToken, Collections.singletonList(lineMessage));
 		StringEntity entity = new StringEntity(
@@ -99,6 +96,6 @@ public class LineBotService {
 	}
 	
 	private boolean isTextMessage(LineEvent event) {
-		return event.getType().equals("message") && event.getMessage().getType().equals("text");
+		return event.getType().equals("message") && event.getMessage().getType().equals(LineMessageType.TEXT);
 	}
 }

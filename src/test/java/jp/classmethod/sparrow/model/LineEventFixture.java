@@ -47,7 +47,7 @@ public class LineEventFixture {
 	}
 	
 	public static LineMessage createLineMessage() {
-		return new LineMessage("text", "325708", "Hello, world", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325708", "Hello, world", null, null,
 				0.0, 0.0, null, null);
 	}
 	

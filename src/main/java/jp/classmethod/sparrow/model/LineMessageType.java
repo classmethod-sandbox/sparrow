@@ -15,41 +15,24 @@
  */
 package jp.classmethod.sparrow.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by mochizukimasao on 2017/03/30.
+ * Created by mochizukimasao on 2017/04/02.
  *
  * @author mochizukimasao
  * @since version
  */
-@Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor
-@NoArgsConstructor
-public class LineMessage {
+public enum LineMessageType {
+	@JsonProperty("text") TEXT,
 	
-	private LineMessageType type;
+	@JsonProperty("image") IMAGE,
 	
-	private String id;
+	@JsonProperty("video") VIDEO,
 	
-	private String text;
+	@JsonProperty("audio") AUDIO,
 	
-	// Location message
-	private String title;
+	@JsonProperty("location") LOCATION,
 	
-	private String address;
-	
-	private double latitude;
-	
-	private double longitude;
-	
-	// Sticker message
-	private String packageId;
-	
-	private String stickerId;
+	@JsonProperty("sticker") STICKER;
 }
