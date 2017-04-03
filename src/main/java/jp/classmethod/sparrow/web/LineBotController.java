@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +44,12 @@ public class LineBotController {
 	
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<String> receiveWebhook(@RequestBody LineWebhookRequest webhookRequest) {
+	public ResponseEntity<Void> receiveWebhook(@RequestHeader(value = "X-Line-Signature") String signature,
+			@RequestBody LineWebhookRequest webhookRequest) {
+		if (botService.validateRequestSignature(signature, webhookRequest) == false) {
+			log.warn("signature did not match");
+			return ResponseEntity.badRequest().build();
+		}
 		webhookRequest.getEvents()
 			.stream()
 			.peek(event -> log.info("{}", event))
@@ -57,6 +63,6 @@ public class LineBotController {
 				}
 			});
 		
-		return ResponseEntity.ok("");
+		return ResponseEntity.ok().build();
 	}
 }

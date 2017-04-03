@@ -17,13 +17,18 @@ package jp.classmethod.sparrow.model;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -34,6 +39,7 @@ import org.apache.http.util.EntityUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.classmethod.sparrow.configprops.LineBotConfigurationProperties;
+import jp.classmethod.sparrow.web.LineWebhookRequest;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -53,6 +59,30 @@ public class LineBotService {
 	
 	private final CloseableHttpClient httpClient;
 	
+	
+	/**
+	 * Lineの署名検証を行う
+	 * https://devdocs.line.me/ja/#webhooks
+	 * @param expected HTTPヘッダ X-Line-Signature の値
+	 * @param request Body部
+	 * @return ヘッダと計算結果が一致していればtrue. 不一致や計算失敗の場合はfalse
+	 */
+	public boolean validateRequestSignature(String expected, LineWebhookRequest request) {
+		try {
+			String requestString = objectMapper.writeValueAsString(request);
+			String channelSecret = configurationProperties.getChannelSecret();
+			SecretKeySpec key = new SecretKeySpec(channelSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+			Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(key);
+			byte[] source = requestString.getBytes(StandardCharsets.UTF_8);
+			String result = Base64.encodeBase64String(mac.doFinal(source));
+			log.debug("signature calculation result : {}", result);
+			return expected.equals(result);
+		} catch (IOException | GeneralSecurityException e) {
+			log.warn("failed to calculate signature : ", e);
+			return false;
+		}
+	}
 	
 	public void echoBot(LineEvent event) {
 		if (isTextMessage(event) == false) {
