@@ -64,12 +64,12 @@ public class LineBotService {
 	 * Lineの署名検証を行う
 	 * https://devdocs.line.me/ja/#webhooks
 	 * @param expected HTTPヘッダ X-Line-Signature の値
-	 * @param request Body部
+	 * @param requestBody Body部の文字列
 	 * @return ヘッダと計算結果が一致していればtrue. 不一致や計算失敗の場合はfalse
 	 */
-	public boolean validateRequestSignature(String expected, LineWebhookRequest request) {
+	public boolean validateRequestSignature(String expected, String requestBody) {
 		try {
-			String result = calculateRequestSignature(objectMapper.writeValueAsString(request));
+			String result = calculateRequestSignature(requestBody);
 			return expected.equals(result);
 		} catch (IOException | GeneralSecurityException e) {
 			log.warn("failed to calculate signature : ", e);
@@ -86,6 +86,10 @@ public class LineBotService {
 		String result = Base64.encodeBase64String(mac.doFinal(source));
 		log.debug("signature calculation result : {}", result);
 		return result;
+	}
+	
+	public LineWebhookRequest serializeRequest(String request) throws IOException {
+		return objectMapper.readValue(request, LineWebhookRequest.class);
 	}
 	
 	public void echoBot(LineEvent event) {

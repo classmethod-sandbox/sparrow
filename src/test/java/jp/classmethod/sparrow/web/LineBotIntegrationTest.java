@@ -16,7 +16,6 @@
 package jp.classmethod.sparrow.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import org.junit.Test;
@@ -45,6 +45,9 @@ import jp.classmethod.sparrow.model.LineBotService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles({
+	"test"
+})
 public class LineBotIntegrationTest {
 	
 	@Autowired
@@ -59,7 +62,7 @@ public class LineBotIntegrationTest {
 		
 		// setup
 		// skip signature validation
-		when(lineBotService.validateRequestSignature(anyString(), any(LineWebhookRequest.class)))
+		when(lineBotService.validateRequestSignature(anyString(), anyString()))
 			.thenReturn(true);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,9 +71,8 @@ public class LineBotIntegrationTest {
 		HttpEntity<LineWebhookRequest> entity = new HttpEntity<>(data, headers);
 		
 		// exercise
-		ResponseEntity<String> actual = restTemplate.exchange("/sparrow/", HttpMethod.POST, entity, String.class);
+		ResponseEntity<Void> actual = restTemplate.exchange("/sparrow/", HttpMethod.POST, entity, Void.class);
 		// verify
 		assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-	
 }
