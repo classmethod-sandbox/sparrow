@@ -16,9 +16,13 @@
 package jp.classmethod.sparrow.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +34,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import jp.classmethod.sparrow.model.LineBotService;
 
 /**
  * Test for {@link ExampleController}.
@@ -44,15 +50,23 @@ public class LineBotIntegrationTest {
 	@Autowired
 	TestRestTemplate restTemplate;
 	
+	@SpyBean
+	LineBotService lineBotService;
+	
 	
 	@Test
 	public void testWebhookRequest() throws Exception {
 		
+		// setup
+		// skip signature validation
+		when(lineBotService.validateRequestSignature(anyString(), any(LineWebhookRequest.class)))
+			.thenReturn(true);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		
+		headers.set("X-Line-Signature", "/v4Ra2mMN4ZjnjABJsDpibMaI2x8ZAg0Tl5UNDLPvjE=");
 		LineWebhookRequest data = LineWebhookRequestFixture.createRequest();
 		HttpEntity<LineWebhookRequest> entity = new HttpEntity<>(data, headers);
+		
 		// exercise
 		ResponseEntity<String> actual = restTemplate.exchange("/sparrow/", HttpMethod.POST, entity, String.class);
 		// verify

@@ -46,6 +46,7 @@ public class LineBotController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> receiveWebhook(@RequestHeader(value = "X-Line-Signature") String signature,
 			@RequestBody LineWebhookRequest webhookRequest) {
+		log.info("signature: {}", signature);
 		if (botService.validateRequestSignature(signature, webhookRequest) == false) {
 			log.warn("signature did not match");
 			return ResponseEntity.badRequest().build();

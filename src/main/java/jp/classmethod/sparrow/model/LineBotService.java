@@ -69,19 +69,23 @@ public class LineBotService {
 	 */
 	public boolean validateRequestSignature(String expected, LineWebhookRequest request) {
 		try {
-			String requestString = objectMapper.writeValueAsString(request);
-			String channelSecret = configurationProperties.getChannelSecret();
-			SecretKeySpec key = new SecretKeySpec(channelSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-			Mac mac = Mac.getInstance("HmacSHA256");
-			mac.init(key);
-			byte[] source = requestString.getBytes(StandardCharsets.UTF_8);
-			String result = Base64.encodeBase64String(mac.doFinal(source));
-			log.debug("signature calculation result : {}", result);
+			String result = calculateRequestSignature(objectMapper.writeValueAsString(request));
 			return expected.equals(result);
 		} catch (IOException | GeneralSecurityException e) {
 			log.warn("failed to calculate signature : ", e);
 			return false;
 		}
+	}
+	
+	String calculateRequestSignature(String requestBody) throws IOException, GeneralSecurityException {
+		String channelSecret = configurationProperties.getChannelSecret();
+		SecretKeySpec key = new SecretKeySpec(channelSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+		Mac mac = Mac.getInstance("HmacSHA256");
+		mac.init(key);
+		byte[] source = requestBody.getBytes(StandardCharsets.UTF_8);
+		String result = Base64.encodeBase64String(mac.doFinal(source));
+		log.debug("signature calculation result : {}", result);
+		return result;
 	}
 	
 	public void echoBot(LineEvent event) {

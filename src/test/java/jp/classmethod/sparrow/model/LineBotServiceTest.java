@@ -15,6 +15,8 @@
  */
 package jp.classmethod.sparrow.model;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -57,7 +59,7 @@ public class LineBotServiceTest {
 	
 	@Spy
 	LineBotConfigurationProperties configurationProperties = new LineBotConfigurationProperties()
-		.setChannelSecret("secret_token")
+		.setChannelSecret("channel_secret")
 		.setChannelToken("channel_token")
 		.setMessageApiEndpoint("http://localhost:8080/");
 	
@@ -124,5 +126,12 @@ public class LineBotServiceTest {
 		
 		// exercise
 		sut.echoBot(event);
+	}
+	
+	@Test
+	public void testSignatureCalculationValidity() throws Exception {
+		String expected = "2uK7wt4xHTJk7iFSil4GB4oC48Zk4ljXddiGxrvcsG0=";
+		String result = sut.calculateRequestSignature("{\"key\": \"value\"}");
+		assertThat(result, equalTo(expected));
 	}
 }

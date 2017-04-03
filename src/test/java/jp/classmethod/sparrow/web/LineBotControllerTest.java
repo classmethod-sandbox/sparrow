@@ -15,6 +15,9 @@
  */
 package jp.classmethod.sparrow.web;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,11 +45,11 @@ import jp.classmethod.sparrow.model.LineBotService;
 @RunWith(MockitoJUnitRunner.class)
 public class LineBotControllerTest {
 	
-	@InjectMocks
-	LineBotController sut;
-	
 	@Mock
 	LineBotService botService;
+	
+	@InjectMocks
+	LineBotController sut;
 	
 	private MockMvc mvc;
 	
@@ -58,17 +61,37 @@ public class LineBotControllerTest {
 	
 	@Test
 	public void testWebhookRequest() throws Exception {
-		
+		// setup
 		LineWebhookRequest request = LineWebhookRequestFixture.createRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(request);
+		when(botService.validateRequestSignature(anyString(), any(LineWebhookRequest.class)))
+			.thenReturn(true);
 		
 		// exercise
 		mvc.perform(post("/sparrow")
 			.contentType(MediaType.APPLICATION_JSON)
+			.header("X-Line-Signature", "Signature")
 			.content(content))
 			// verify
 			.andExpect(status().isOk());
 	}
 	
+	@Test
+	public void testInvalidWebhookRequest() throws Exception {
+		// setup
+		LineWebhookRequest request = LineWebhookRequestFixture.createRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		String content = mapper.writeValueAsString(request);
+		when(botService.validateRequestSignature(anyString(), any(LineWebhookRequest.class)))
+			.thenReturn(false);
+		
+		// exercise
+		mvc.perform(post("/sparrow")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("X-Line-Signature", "Signature")
+			.content(content))
+			// verify
+			.andExpect(status().isBadRequest());
+	}
 }

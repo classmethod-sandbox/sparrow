@@ -19,6 +19,8 @@ import java.util.Map;
 
 import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by mochizukimasao on 2017/03/30.
  *
@@ -27,6 +29,7 @@ import lombok.Data;
  */
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LineEvent {
 	
 	private final String type;
