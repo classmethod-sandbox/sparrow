@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# download configuration from S3
+export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed -e 's/.$//')
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+getTagValue() {
+    tagName=$1
+    ret=$(aws ec2 describe-instances --instance-id ${INSTANCE_ID} \
+        | jq -r '.Reservations[].Instances[].Tags[] | select(.Key == "'${tagName}'") | .Value')
+    echo ${ret}
+}
+s3Bucket=$(getTagValue sparrow_configuration_bucket)
+s3Prefix=$(getTagValue sparrow_configuration_prefix)
+aws s3 cp s3://${s3Bucket}/${s3Prefix}/application.json /opt/sparrow/application.json
+
 sudo chown ec2-user:ec2-user -R /opt/sparrow/*
 
 jarFilePath=$(find /opt/sparrow/ -name "*.jar")
@@ -25,4 +39,6 @@ JAVA_OPTS="${JAVA_OPTS} -XX:ErrorFile=/opt/sparrow/hs_err_pid%p.log"
 JAVA_OPTS="${JAVA_OPTS} -Dsun.net.inetaddr.ttl=60"
 JAVA_OPTS="${JAVA_OPTS} -Dfile.encoding=UTF-8"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.port=8080"
+
+export SPRING_APPLICATION_JSON=$(cat /opt/sparrow/application.json)
 EOF
