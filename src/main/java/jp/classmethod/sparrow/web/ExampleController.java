@@ -20,18 +20,11 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jp.xet.sparwings.spring.web.httpexceptions.HttpInternalServerErrorException;
 
 /**
  * サンプルのcontroller実装。
@@ -68,19 +61,9 @@ public class ExampleController {
 	
 	// Json
 	@RequestMapping(value = "/calc-json", method = RequestMethod.GET)
-	public ResponseEntity<String> calcJson(@RequestParam int x, @RequestParam int y) {
-		
+	public ResponseEntity<Map<String, Integer>> calcJson(@RequestParam int x, @RequestParam int y) {
 		log.debug("calcJson");
-		String json;
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			json = mapper.writeValueAsString(getMap(x, y));
-		} catch (JsonProcessingException e) {
-			throw new HttpInternalServerErrorException(e);
-		}
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("content-type", "application/json;charset=utf-8");
-		return new ResponseEntity<String>(json, headers, HttpStatus.OK);
+		return ResponseEntity.ok(getMap(x, y));
 	}
 	
 	public Map<String, Integer> getMap(int x, int y) {
