@@ -66,7 +66,7 @@ public class LineBotControllerTest {
 		String content = mapper.writeValueAsString(request);
 		when(botService.validateRequestSignature(anyString(), anyString()))
 			.thenReturn(true);
-		when(botService.serializeRequest(anyString())).thenReturn(request);
+		when(botService.deserializeRequest(anyString())).thenReturn(request);
 		
 		// exercise
 		mvc.perform(post("/sparrow")

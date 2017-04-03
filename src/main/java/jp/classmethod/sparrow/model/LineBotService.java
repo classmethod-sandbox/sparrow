@@ -70,9 +70,9 @@ public class LineBotService {
 	public boolean validateRequestSignature(String expected, String requestBody) {
 		try {
 			String result = calculateRequestSignature(requestBody);
-			return expected.equals(result);
+			return result.equals(expected);
 		} catch (IOException | GeneralSecurityException e) {
-			log.warn("failed to calculate signature : ", e);
+			log.warn("failed to calculate signature", e);
 			return false;
 		}
 	}
@@ -88,7 +88,7 @@ public class LineBotService {
 		return result;
 	}
 	
-	public LineWebhookRequest serializeRequest(String request) throws IOException {
+	public LineWebhookRequest deserializeRequest(String request) throws IOException {
 		return objectMapper.readValue(request, LineWebhookRequest.class);
 	}
 	
@@ -96,24 +96,20 @@ public class LineBotService {
 		if (isTextMessage(event) == false) {
 			return;
 		}
-		try {
-			HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), event.getMessage().getText());
-			try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
-				int statusCode = response.getStatusLine().getStatusCode();
-				if (statusCode != 200) {
-					log.error("failed to send message: {} : {}", statusCode,
-							EntityUtils.toString(response.getEntity()));
-					throw new LineBotAPIException("API request did not succeed.");
-				}
-			} catch (IOException e) {
-				throw new LineBotAPIException("I/O error in LINE bot API call", e);
+		HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), event.getMessage().getText());
+		try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode != 200) {
+				log.error("failed to send message: {} : {}", statusCode,
+						EntityUtils.toString(response.getEntity()));
+				throw new LineBotAPIException("API request did not succeed.");
 			}
 		} catch (IOException e) {
-			log.error("failed to build API request : ", e);
+			throw new LineBotAPIException("I/O error in LINE bot API call", e);
 		}
 	}
 	
-	private HttpPost buildMessageAPIRequest(String replyToken, String text) throws IOException {
+	private HttpPost buildMessageAPIRequest(String replyToken, String text) {
 		HttpPost postRequest = new HttpPost(configurationProperties.getMessageApiEndpoint());
 		
 		// header
@@ -126,13 +122,17 @@ public class LineBotService {
 		lineMessage.setType(LineMessageType.TEXT);
 		lineMessage.setText(text);
 		LineMessageAPIRequest request = new LineMessageAPIRequest(replyToken, Collections.singletonList(lineMessage));
-		StringEntity entity = new StringEntity(
-				objectMapper.writeValueAsString(request),
-				StandardCharsets.UTF_8);
-		postRequest.setEntity(entity);
-		
-		log.info("{}", lineMessage.toString());
-		return postRequest;
+		try {
+			StringEntity entity = new StringEntity(
+					objectMapper.writeValueAsString(request),
+					StandardCharsets.UTF_8);
+			postRequest.setEntity(entity);
+			
+			log.info("{}", lineMessage.toString());
+			return postRequest;
+		} catch (IOException e) {
+			throw new AssertionError(e);
+		}
 	}
 	
 	private boolean isTextMessage(LineEvent event) {

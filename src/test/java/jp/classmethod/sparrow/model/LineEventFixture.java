@@ -15,6 +15,8 @@
  */
 package jp.classmethod.sparrow.model;
 
+import java.util.Collections;
+
 /**
  * Created by mochizukimasao on 2017/03/30.
  *
@@ -51,4 +53,8 @@ public class LineEventFixture {
 				0.0, 0.0, null, null);
 	}
 	
+	public static LineMessageAPIRequest createLineMessageAPIRequest() {
+		return new LineMessageAPIRequest("nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				Collections.singletonList(createLineMessage()));
+	}
 }

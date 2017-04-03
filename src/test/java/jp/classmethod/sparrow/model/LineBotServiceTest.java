@@ -20,14 +20,12 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Collections;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -69,7 +67,8 @@ public class LineBotServiceTest {
 	@Spy
 	ObjectMapper objectMapper;
 	
-	private LineMessageAPIRequest request;
+	@Spy
+	LineMessageAPIRequest request = LineEventFixture.createLineMessageAPIRequest();
 	
 	@InjectMocks
 	LineBotService sut;
@@ -80,7 +79,6 @@ public class LineBotServiceTest {
 		LineMessage message = new LineMessage();
 		message.setType(LineMessageType.TEXT);
 		message.setText("text body");
-		request = spy(new LineMessageAPIRequest("fffff", Collections.singletonList(message)));
 		when(objectMapper.writeValueAsString(any())).thenReturn("");
 		
 	}
@@ -99,6 +97,7 @@ public class LineBotServiceTest {
 		// exercise
 		sut.echoBot(event);
 		
+		// verify
 		verify(httpClient, times(1)).execute(isA(HttpUriRequest.class));
 	}
 	
@@ -130,8 +129,13 @@ public class LineBotServiceTest {
 	
 	@Test
 	public void testSignatureCalculationValidity() throws Exception {
+		// setup
 		String expected = "2uK7wt4xHTJk7iFSil4GB4oC48Zk4ljXddiGxrvcsG0=";
+		
+		// exercise
 		String result = sut.calculateRequestSignature("{\"key\": \"value\"}");
+		
+		// verify
 		assertThat(result, equalTo(expected));
 	}
 }

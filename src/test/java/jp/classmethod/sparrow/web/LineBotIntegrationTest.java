@@ -45,9 +45,7 @@ import jp.classmethod.sparrow.model.LineBotService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({
-	"test"
-})
+@ActiveProfiles("test")
 public class LineBotIntegrationTest {
 	
 	@Autowired

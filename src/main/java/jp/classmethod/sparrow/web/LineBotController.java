@@ -20,15 +20,12 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.classmethod.sparrow.model.LineBotAPIException;
 import jp.classmethod.sparrow.model.LineBotService;
@@ -47,9 +44,6 @@ public class LineBotController {
 	
 	private final LineBotService botService;
 	
-	@Autowired
-	ObjectMapper objectMapper;
-	
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> receiveWebhook(@RequestHeader(value = "X-Line-Signature") String signature,
@@ -60,9 +54,8 @@ public class LineBotController {
 			return ResponseEntity.badRequest().build();
 		}
 		try {
-			LineWebhookRequest webhookRequest = botService.serializeRequest(requestBody);
-			webhookRequest.getEvents()
-				.stream()
+			LineWebhookRequest webhookRequest = botService.deserializeRequest(requestBody);
+			webhookRequest.getEvents().stream()
 				.peek(event -> log.info("{}", event))
 				.forEach(event -> {
 					try {
