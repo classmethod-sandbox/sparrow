@@ -64,15 +64,15 @@ public class LineBotServiceTest {
 		.setMessageApiEndpoint("http://localhost:8080/");
 	
 	@Mock
-	private CloseableHttpClient httpClient;
+	CloseableHttpClient httpClient;
 	
-	@Mock
-	private ObjectMapper objectMapper;
+	@Spy
+	ObjectMapper objectMapper;
 	
 	private LineMessageAPIRequest request;
 	
 	@InjectMocks
-	private LineBotService sut;
+	LineBotService sut;
 	
 	
 	@Before

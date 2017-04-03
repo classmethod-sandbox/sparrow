@@ -94,17 +94,18 @@ public class LineBotService {
 		}
 		try {
 			HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), event.getMessage().getText());
-			CloseableHttpResponse response = httpClient.execute(postRequest);
-			
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != 200) {
-				log.error("failed to send message: {} : {}", statusCode,
-						EntityUtils.toString(response.getEntity()));
-				throw new LineBotAPIException("API request did not succeed.");
+			try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
+				int statusCode = response.getStatusLine().getStatusCode();
+				if (statusCode != 200) {
+					log.error("failed to send message: {} : {}", statusCode,
+							EntityUtils.toString(response.getEntity()));
+					throw new LineBotAPIException("API request did not succeed.");
+				}
+			} catch (IOException e) {
+				throw new LineBotAPIException("I/O error in LINE bot API call", e);
 			}
-			response.close();
 		} catch (IOException e) {
-			throw new LineBotAPIException("I/O error in LINE bot API call", e);
+			log.error("failed to build API request : ", e);
 		}
 	}
 	

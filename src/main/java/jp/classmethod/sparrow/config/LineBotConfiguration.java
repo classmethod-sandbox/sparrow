@@ -29,14 +29,12 @@ import org.apache.http.impl.client.HttpClients;
  * @author mochizukimasao
  * @since version
  */
-
 @Configuration
 public class LineBotConfiguration {
 	
-	@Bean
+	@Bean(destroyMethod = "close")
 	@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 	public CloseableHttpClient httpClient() {
 		return HttpClients.createSystem();
 	}
-	
 }
