@@ -37,8 +37,8 @@ import jp.classmethod.sparrow.model.LineBotService;
  * @since version
  */
 @RestController
-@Slf4j
 @RequestMapping(path = "/sparrow")
+@Slf4j
 @RequiredArgsConstructor
 public class LineBotController {
 	
