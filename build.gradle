@@ -60,6 +60,18 @@ springBoot {
 	executable = true
 }
 
+//======== local test and run ========
+def springProfilesActive = project.hasProperty("springProfiles") ? project.springProfiles : "personal"
+test {
+	testLogging.exceptionFormat = 'full'
+	beforeTest {
+		logger.lifecycle("{} > {}", it.parent.name, it.name)
+	}
+	systemProperties["spring.profiles.active"] = springProfilesActive
+}
+bootRun.systemProperties["spring.profiles.active"] = springProfilesActive
+
+
 // libraries
 repositories {
 	jcenter()
@@ -72,6 +84,7 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 	compile "jp.xet.spar-wings:spar-wings-httpexceptions:$sparWingsVersion"
+	compile "org.apache.httpcomponents:httpclient:4.5.3"
 
 	// other
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -79,7 +92,7 @@ dependencies {
 	// testing
 	testCompileOnly "org.projectlombok:lombok:$lombokVersion" // http://qiita.com/gillax/items/1cbcff003384087f2db1
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-	testCompile "org.assertj:assertj-core:$assertjVersion"
+	testCompile "org.assertj:assertj-core"
 	testCompile "com.jayway.jsonpath:json-path-assert:$jsonPathAssertVersion"
 }
 
