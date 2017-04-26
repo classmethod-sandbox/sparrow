@@ -17,8 +17,10 @@ package jp.classmethod.sparrow.model;
 
 import java.util.List;
 
-/**
+/** 
  * Created by mochizukimasao on 2017/04/11.
+ * 
+ * Calculator repository interface.
  *
  * @author mochizukimasao
  * @since version
