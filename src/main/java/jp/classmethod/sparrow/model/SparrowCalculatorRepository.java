@@ -26,14 +26,20 @@ import java.util.List;
 public interface SparrowCalculatorRepository {
 
 	/**
-	 * ユーザの発言一覧を返す。
-	 * リストはtimestampの降順になるように実装する
+	 * ユーザの発言リストを返す。
+	 * リストはtimestampの降順になるように実装すること。
+	 * offsetの位置(0始まり)からlimitに指定した数以下の要素を返す。
 	 * @param userId ユーザーID
 	 * @param offset
 	 * @param limit
 	 * @return
 	 */
 	List<LineMessageEntity> findByUser(String userId, int offset, int limit);
-	
+
+	/**
+	 * LineMessageEntityを保存する。
+	 * @param messageEntity
+	 * @return LineMessageEntity
+	 */
 	LineMessageEntity save(LineMessageEntity messageEntity);
 }
