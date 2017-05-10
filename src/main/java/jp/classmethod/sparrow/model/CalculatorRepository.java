@@ -25,8 +25,15 @@ import java.util.List;
  * @author mochizukimasao
  * @since version
  */
-public interface SparrowCalculatorRepository {
-
+public interface CalculatorRepository {
+	
+	/**
+	 * LineMessageEntityをRepositoryに保存する。
+	 * @param messageEntity
+	 * @return LineMessageEntity
+	 */
+	List<LineMessageEntity> save(LineMessageEntity messageEntity);
+	
 	/**
 	 * ユーザの発言リストを返す。
 	 * リストはtimestampの降順になるように実装すること。
@@ -37,11 +44,4 @@ public interface SparrowCalculatorRepository {
 	 * @return
 	 */
 	List<LineMessageEntity> findByUser(String userId, int offset, int limit);
-
-	/**
-	 * LineMessageEntityを保存する。
-	 * @param messageEntity
-	 * @return LineMessageEntity
-	 */
-	LineMessageEntity save(LineMessageEntity messageEntity);
 }
