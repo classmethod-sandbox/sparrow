@@ -33,17 +33,17 @@ import jp.classmethod.sparrow.infrastructure.InMemoryCalculatorRepository;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CalclatorTest {
-
+	
 	LineEvent startEvent;
-
+	
 	LineEvent endEvent;
-
+	
 	LineEvent resetEvent;
-
+	
 	LineEvent numberEvent;
-
+	
 	LineEvent invalidEvent;
-
+	
 	LineMessageEntity startLineMessageEntity;
 	
 	LineMessageEntity endLineMessageEntity;
@@ -76,7 +76,7 @@ public class CalclatorTest {
 		// 数字
 		numberEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createNumberLineMessage());
 		numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
-
+		
 		// 無効な文字列
 		invalidEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createInvalidLineMessage());
 	}
@@ -86,7 +86,7 @@ public class CalclatorTest {
 		// setup
 		when(inMemoryCalculatorRepository.save(startLineMessageEntity)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity)).thenCallRealMethod();
-
+		
 		// exesice
 		String result1 = sut.save(startEvent);		// start
 		String result2 = sut.save(endEvent);  		// end
