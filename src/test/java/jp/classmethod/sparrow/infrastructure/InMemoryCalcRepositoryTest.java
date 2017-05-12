@@ -20,13 +20,12 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import jp.classmethod.sparrow.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import jp.classmethod.sparrow.model.LineMessageEntity;
 
 /**
  * Created by kunita.fumiko on 2017/05/08.
@@ -36,60 +35,61 @@ public class InMemoryCalcRepositoryTest {
 	
 	@InjectMocks
 	InMemoryCalculatorRepository sut;
+
+	LineEvent startEvent;
+
+	LineEvent startEvent2;
+
+	LineEvent numberEvent;
+
+	LineMessageEntity startLineMessageEntity;
+
+	LineMessageEntity startLineMessageEntity2;
+
+	LineMessageEntity numberLineMessageEntity;
 	
-	LineMessageEntity lineMessageEntity1 = new LineMessageEntity();
-	
-	LineMessageEntity lineMessageEntity2 = new LineMessageEntity();
-	
-	LineMessageEntity lineMessageEntity3 = new LineMessageEntity();
-	
-	
+	// 事前準備（LineMessageEntityの生成）
 	@Before
 	public void setup() {
-		lineMessageEntity1.setMessageId("325708");
-		lineMessageEntity1.setUserId("U206d25c2ea6bd87c17655609a1c37cb8");
-		lineMessageEntity1.setTimestamp(1462629479859L);
-		lineMessageEntity1.setValue(0);
-		
-		lineMessageEntity2.setMessageId("325709");
-		lineMessageEntity2.setUserId("U206d25c2ea6bd87c17655609a1c37cb8");
-		lineMessageEntity2.setTimestamp(1462629479860L);
-		lineMessageEntity2.setValue(10);
-		
-		lineMessageEntity3.setMessageId("325710");
-		lineMessageEntity3.setUserId("U206d25c2ea6bd87c17655609a1c38cb9");
-		lineMessageEntity3.setTimestamp(1462629479862L);
-		lineMessageEntity3.setValue(0);
+		// start
+		startEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
+		startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
+		// start（uIdが異なる）
+		startEvent2 = LineEventFixture.createLineUserEvent2(LineMessageFixture.createStartLineMessage());
+		startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
+
+		// 数字
+		numberEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createNumberLineMessage());
+		numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
 	}
-	
+
+	// 異なるuIdでLinentityをsaveし、uId別にリスト作成＆追加しているかを確認します
 	@Test
 	public void testSave() {
-		//setup
-		//exercise
-		sut.save(lineMessageEntity1);
-		List<LineMessageEntity> list1 = sut.save(lineMessageEntity2);
-		List<LineMessageEntity> list2 = sut.save(lineMessageEntity3);
-		//verify
+		// setup
+		// exercise
+		sut.save(startLineMessageEntity);
+		List<LineMessageEntity> list1 = sut.save(numberLineMessageEntity);
+		List<LineMessageEntity> list2 = sut.save(startLineMessageEntity2);
+		// verify
 		assertThat(list1, hasSize(2));
 		assertThat(list2, hasSize(1));
 	}
-	
-	/**
-	 *
-	 */
+
+	/* 存在しているuIdと存在しないuIdでリスト検索し、
+	　　存在しているuIdでは指定したuIdのリスト（LineEntity）のみを返し、
+	　　存在していないuIdではリストを持っていないことを確認します。*/
 	@Test
 	public void testFindByUser() {
-		//setup
-		sut.save(lineMessageEntity1);
-		sut.save(lineMessageEntity2);
-		sut.save(lineMessageEntity3);
-		//exercise
+		// setup
+		sut.save(startLineMessageEntity);
+		sut.save(numberLineMessageEntity);
+		sut.save(startLineMessageEntity2);
+		// exercise
 		List<LineMessageEntity> list1 = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 1, 1);
 		List<LineMessageEntity> list2 = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 1, 1);
-		//verify
+		// verify
 		assertThat(list1, hasSize(2));
 		assertThat(list2, hasSize(0));
-		
 	}
-	
 }
