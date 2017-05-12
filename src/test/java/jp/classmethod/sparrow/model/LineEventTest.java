@@ -51,7 +51,7 @@ public class LineEventTest {
 					+ "  'message': {"
 					+ "    'id': '325708',"
 					+ "    'type': 'text',"
-					+ "    'text': 'Hello, world'"
+					+ "    'text': 'start'"
 					+ "  }"
 					+ "}";
 	
@@ -89,7 +89,7 @@ public class LineEventTest {
 	@Test
 	public void testJson2Value() throws Exception {
 		//setup
-		LineEvent expect = LineEventFixture.createLineUserEvent();
+		LineEvent expect = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
 		
 		// exercise
 		ObjectContent<LineEvent> actual = json.parse(USER_EVENT_JSON);

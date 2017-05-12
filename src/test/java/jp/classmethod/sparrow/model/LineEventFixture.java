@@ -25,12 +25,23 @@ import java.util.Collections;
  */
 public class LineEventFixture {
 	
-	public static LineEvent createLineUserEvent() {
+	public static LineEvent createLineUserEvent(LineMessage lineMessage) {
 		return new LineEvent(
 				"message",
 				146262947912543L,
 				createLineUserEventSource(),
-				createLineMessage(),
+				lineMessage,
+				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				null,
+				null);
+	}
+	
+	public static LineEvent createLineUserEvent2(LineMessage lineMessage) {
+		return new LineEvent(
+				"message",
+				146262947912543L,
+				createLineUserEventSource2(),
+				lineMessage,
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
@@ -38,6 +49,10 @@ public class LineEventFixture {
 	
 	public static LineUserEventSource createLineUserEventSource() {
 		return new LineUserEventSource(LineEventSourceType.USER, "U206d25c2ea6bd87c17655609a1c37cb8");
+	}
+	
+	public static LineUserEventSource createLineUserEventSource2() {
+		return new LineUserEventSource(LineEventSourceType.USER, "U206d25c2ea6bd87c17655609a1c37cb9");
 	}
 	
 	public static LineGroupEventSource createLineGroupEventSource() {
@@ -48,13 +63,8 @@ public class LineEventFixture {
 		return new LineRoomEventSource(LineEventSourceType.ROOM, "U206d25c2ea6bd87c17655609a1c37cb8");
 	}
 	
-	public static LineMessage createLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "Hello, world", null, null,
-				0.0, 0.0, null, null);
-	}
-	
-	public static LineMessageAPIRequest createLineMessageAPIRequest() {
+	public static LineMessageAPIRequest createLineMessageAPIRequest(LineMessage lineMessage) {
 		return new LineMessageAPIRequest("nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				Collections.singletonList(createLineMessage()));
+				Collections.singletonList(LineMessageFixture.createStartLineMessage()));
 	}
 }
