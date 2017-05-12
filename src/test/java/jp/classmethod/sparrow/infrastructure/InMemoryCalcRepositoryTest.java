@@ -20,12 +20,17 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import jp.classmethod.sparrow.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import jp.classmethod.sparrow.model.LineEvent;
+import jp.classmethod.sparrow.model.LineEventFixture;
+import jp.classmethod.sparrow.model.LineMessageEntity;
+import jp.classmethod.sparrow.model.LineMessageEntityFixture;
+import jp.classmethod.sparrow.model.LineMessageFixture;
 
 /**
  * Created by kunita.fumiko on 2017/05/08.
@@ -35,18 +40,19 @@ public class InMemoryCalcRepositoryTest {
 	
 	@InjectMocks
 	InMemoryCalculatorRepository sut;
-
+	
 	LineEvent startEvent;
-
+	
 	LineEvent startEvent2;
-
+	
 	LineEvent numberEvent;
-
+	
 	LineMessageEntity startLineMessageEntity;
-
+	
 	LineMessageEntity startLineMessageEntity2;
-
+	
 	LineMessageEntity numberLineMessageEntity;
+	
 	
 	// 事前準備（LineMessageEntityの生成）
 	@Before
@@ -57,12 +63,12 @@ public class InMemoryCalcRepositoryTest {
 		// start（uIdが異なる）
 		startEvent2 = LineEventFixture.createLineUserEvent2(LineMessageFixture.createStartLineMessage());
 		startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
-
+		
 		// 数字
 		numberEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createNumberLineMessage());
 		numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
 	}
-
+	
 	// 異なるuIdでLinentityをsaveし、uId別にリスト作成＆追加しているかを確認します
 	@Test
 	public void testSave() {
@@ -75,7 +81,7 @@ public class InMemoryCalcRepositoryTest {
 		assertThat(list1, hasSize(2));
 		assertThat(list2, hasSize(1));
 	}
-
+	
 	/* 存在しているuIdと存在しないuIdでリスト検索し、
 	　　存在しているuIdでは指定したuIdのリスト（LineEntity）のみを返し、
 	　　存在していないuIdではリストを持っていないことを確認します。*/
