@@ -68,10 +68,13 @@ public class LineBotServiceTest {
 	ObjectMapper objectMapper;
 	
 	@Spy
-	LineMessageAPIRequest request = LineEventFixture.createLineMessageAPIRequest();
+	LineMessageAPIRequest request =
+			LineEventFixture.createLineMessageAPIRequest(LineMessageFixture.createStartLineMessage());
 	
 	@InjectMocks
 	LineBotService sut;
+	
+	String text = "calc mode start";
 	
 	
 	@Before
@@ -86,7 +89,7 @@ public class LineBotServiceTest {
 	@Test
 	public void testMessageIsProcessed() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createLineUserEvent();
+		LineEvent event = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
 		CloseableHttpResponse response = mock(CloseableHttpResponse.class);
 		HttpEntity entity = mock(HttpEntity.class);
 		when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, ""));
@@ -95,7 +98,7 @@ public class LineBotServiceTest {
 		when(httpClient.execute(any())).thenReturn(response);
 		
 		// exercise
-		sut.echoBot(event);
+		sut.echoBot(event, text);
 		
 		// verify
 		verify(httpClient, times(1)).execute(isA(HttpUriRequest.class));
@@ -104,7 +107,7 @@ public class LineBotServiceTest {
 	@Test(expected = LineBotAPIException.class)
 	public void testAPIReturnCodeIsNot200() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createLineUserEvent();
+		LineEvent event = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
 		CloseableHttpResponse response = mock(CloseableHttpResponse.class);
 		HttpEntity entity = mock(HttpEntity.class);
 		when(response.getStatusLine())
@@ -114,17 +117,17 @@ public class LineBotServiceTest {
 		when(httpClient.execute(any())).thenReturn(response);
 		
 		// exercise
-		sut.echoBot(event);
+		sut.echoBot(event, text);
 	}
 	
 	@Test(expected = LineBotAPIException.class)
 	public void testLineBotAPIFailed() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createLineUserEvent();
+		LineEvent event = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
 		when(httpClient.execute(any())).thenThrow(new IOException());
 		
 		// exercise
-		sut.echoBot(event);
+		sut.echoBot(event, text);
 	}
 	
 	@Test
