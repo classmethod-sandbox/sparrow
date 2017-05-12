@@ -71,13 +71,19 @@ public class LineBotService {
 		try {
 			String result = calculateRequestSignature(requestBody);
 			return result.equals(expected);
-		} catch (IOException | GeneralSecurityException e) {
+		} catch (GeneralSecurityException e) {
 			log.warn("failed to calculate signature", e);
 			return false;
 		}
 	}
 	
-	String calculateRequestSignature(String requestBody) throws IOException, GeneralSecurityException {
+	/**
+	 * 署名検証用のシグネチャを計算する
+	 * @param requestBody リクエストの本体
+	 * @return シグネチャの計算結果
+	 * @throws GeneralSecurityException　設定したChannelSecretが異常だった時
+	 */
+	String calculateRequestSignature(String requestBody) throws GeneralSecurityException {
 		String channelSecret = configurationProperties.getChannelSecret();
 		SecretKeySpec key = new SecretKeySpec(channelSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
 		Mac mac = Mac.getInstance("HmacSHA256");
@@ -88,15 +94,26 @@ public class LineBotService {
 		return result;
 	}
 	
+	/**
+	 * JSON文字列をLineWebhookRequest型に変換する
+	 * @param request リクエスト本体のJSON文字列
+	 * @return LineWebhookRequest型のインスタンス
+	 * @throws IOException
+	 */
 	public LineWebhookRequest deserializeRequest(String request) throws IOException {
 		return objectMapper.readValue(request, LineWebhookRequest.class);
 	}
 	
-	public void echoBot(LineEvent event) {
+	/**
+	 *
+	 * @param event Lineイベント情報
+	 */
+	public void echoBot(LineEvent event, String responseText) {
 		if (isTextMessage(event) == false) {
 			return;
 		}
-		HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), event.getMessage().getText());
+		
+		HttpPost postRequest = buildMessageAPIRequest(event.getReplyToken(), responseText);
 		try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != 200) {
@@ -109,7 +126,7 @@ public class LineBotService {
 		}
 	}
 	
-	private HttpPost buildMessageAPIRequest(String replyToken, String text) {
+	private HttpPost buildMessageAPIRequest(String replyToken, String responseText) {
 		HttpPost postRequest = new HttpPost(configurationProperties.getMessageApiEndpoint());
 		
 		// header
@@ -120,7 +137,8 @@ public class LineBotService {
 		// body
 		LineMessage lineMessage = new LineMessage();
 		lineMessage.setType(LineMessageType.TEXT);
-		lineMessage.setText(text);
+		//ここで送信する内容をセット
+		lineMessage.setText(responseText);
 		LineMessageAPIRequest request = new LineMessageAPIRequest(replyToken, Collections.singletonList(lineMessage));
 		try {
 			StringEntity entity = new StringEntity(
@@ -135,6 +153,11 @@ public class LineBotService {
 		}
 	}
 	
+	/**
+	 * リクエストの内容を確認する
+	 * @param event Lineイベント情報
+	 * @return イベントがmessageタイプ＆textタイプである場合はtrue,そうでない場合はfalseを返す
+	 */
 	private boolean isTextMessage(LineEvent event) {
 		return event.getType().equals("message") && event.getMessage().getType().equals(LineMessageType.TEXT);
 	}
