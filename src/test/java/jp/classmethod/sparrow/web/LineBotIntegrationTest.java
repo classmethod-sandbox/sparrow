@@ -17,7 +17,6 @@ package jp.classmethod.sparrow.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,11 +33,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
-import jp.classmethod.sparrow.model.LineBotService;
+import jp.classmethod.sparrow.model.CalcService;
 
 /**
- * Test for {@link ExampleController}.
  *
  * @author daisuke
  * @since #version#
@@ -52,16 +51,15 @@ public class LineBotIntegrationTest {
 	TestRestTemplate restTemplate;
 	
 	@SpyBean
-	LineBotService lineBotService;
+	CalcService calcService;
 	
 	
 	@Test
 	public void testWebhookRequest() throws Exception {
-		
 		// setup
 		// skip signature validation
-		when(lineBotService.validateRequestSignature(anyString(), anyString()))
-			.thenReturn(true);
+		Mockito.doNothing().when(calcService).process(anyString(), anyString());
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("X-Line-Signature", "/v4Ra2mMN4ZjnjABJsDpibMaI2x8ZAg0Tl5UNDLPvjE=");
