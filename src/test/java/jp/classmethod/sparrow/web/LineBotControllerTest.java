@@ -16,6 +16,8 @@
 package jp.classmethod.sparrow.web;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,7 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,7 +66,7 @@ public class LineBotControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(request);
 		
-		Mockito.doNothing().when(calcService).process(anyString(), anyString());
+		doNothing().when(calcService).process(anyString(), anyString());
 		
 		// exercise
 		mvc.perform(post("/sparrow")
@@ -82,8 +83,7 @@ public class LineBotControllerTest {
 		LineWebhookRequest request = LineWebhookRequestFixture.createRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(request);
-		
-		Mockito.doThrow(new IllegalArgumentException()).when(calcService).process(anyString(), anyString());
+		doThrow(new IllegalArgumentException()).when(calcService).process(anyString(), anyString());
 		
 		// exercise
 		mvc.perform(post("/sparrow")
