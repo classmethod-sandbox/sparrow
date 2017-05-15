@@ -57,7 +57,7 @@ public class Calculator {
 			case "reset":
 				resetList(createLineMessageEntity(event, messageText));
 				//resetの場合は発言しない
-				result = "";
+				result = "reset";
 				break;
 			
 			default:

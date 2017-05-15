@@ -97,7 +97,7 @@ public class CalclatorTest {
 		// verify
 		assertThat(result1, is("calc mode start"));
 		assertThat(result2, is("12"));
-		assertThat(result3, is(""));
+		assertThat(result3, is("reset"));
 		assertThat(result4, is(""));
 		assertThat(result5, is("error"));
 	}
