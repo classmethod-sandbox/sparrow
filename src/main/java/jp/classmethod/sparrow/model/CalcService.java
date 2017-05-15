@@ -17,6 +17,7 @@ package jp.classmethod.sparrow.model;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import jp.classmethod.sparrow.web.LineWebhookRequest;
  * Created by kunita.fumiko on 2017/04/13.
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class CalcService {
 	
@@ -34,11 +36,6 @@ public class CalcService {
 	
 	private final LineBotService lineBotService;
 	
-	
-	public CalcService(Calculator calculator, LineBotService lineBotService) {
-		this.calculator = calculator;
-		this.lineBotService = lineBotService;
-	}
 	
 	/**
 	 * リクエスト本体を処理する
