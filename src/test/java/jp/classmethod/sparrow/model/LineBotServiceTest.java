@@ -83,7 +83,6 @@ public class LineBotServiceTest {
 		message.setType(LineMessageType.TEXT);
 		message.setText("text body");
 		when(objectMapper.writeValueAsString(any())).thenReturn("");
-		
 	}
 	
 	@Test

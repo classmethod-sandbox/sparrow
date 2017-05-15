@@ -70,7 +70,6 @@ public class CalcServiceTest {
 		// setup
 		when(lineBotService.validateRequestSignature(anyString(), anyString())).thenReturn(false);
 		// exesice
-		// verify
 		try {
 			sut.process(signature, requestBody);
 			fail(); //例外を投げなかった場合はテスト失敗

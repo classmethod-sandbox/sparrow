@@ -115,8 +115,7 @@ public class CalclatorTest {
 	
 	@Test
 	public void testResetList() {
-		// setup
-		// totalがプラスになる
+		// setup　totalがプラスになる
 		when(inMemoryCalculatorRepository.save(startLineMessageEntity)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity)).thenCallRealMethod();
@@ -128,9 +127,8 @@ public class CalclatorTest {
 	
 	@Test
 	public void testResetList2() {
-		// setup
+		// setup　totalがマイナスになる
 		numberLineMessageEntity.setValue(-12);
-		// totalがマイナスになる
 		when(inMemoryCalculatorRepository.save(startLineMessageEntity)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity)).thenCallRealMethod();
