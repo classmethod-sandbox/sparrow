@@ -51,6 +51,7 @@ public class Calculator {
 			case "end":
 				//計算結果を代入する
 				result = String.valueOf(calculateTotal(createLineMessageEntity(event, messageText)));
+				resetList(createLineMessageEntity(event, messageText));
 				break;
 			
 			case "reset":
@@ -75,7 +76,7 @@ public class Calculator {
 						}
 					}
 				} else {
-					result = "";
+					result = "error";
 				}
 				break;
 		}

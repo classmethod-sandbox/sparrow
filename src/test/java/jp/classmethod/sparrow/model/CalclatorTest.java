@@ -99,7 +99,7 @@ public class CalclatorTest {
 		assertThat(result2, is("12"));
 		assertThat(result3, is(""));
 		assertThat(result4, is(""));
-		assertThat(result5, is(""));
+		assertThat(result5, is("error"));
 	}
 	
 	@Test
