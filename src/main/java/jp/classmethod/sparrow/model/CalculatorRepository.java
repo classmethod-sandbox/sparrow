@@ -32,7 +32,7 @@ public interface CalculatorRepository {
 	 * @param messageEntity
 	 * @return LineMessageEntity
 	 */
-	List<LineMessageEntity> save(LineMessageEntity messageEntity);
+	LineMessageEntity save(LineMessageEntity messageEntity);
 	
 	/**
 	 * ユーザの発言リストを返す。
