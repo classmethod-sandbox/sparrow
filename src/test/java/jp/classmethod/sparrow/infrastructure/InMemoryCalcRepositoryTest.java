@@ -54,7 +54,9 @@ public class InMemoryCalcRepositoryTest {
 	LineMessageEntity numberLineMessageEntity;
 	
 	
-	// 事前準備（LineMessageEntityの生成）
+	/**
+	 * テスト前にLineMessageEntityを生成します
+	 */
 	@Before
 	public void setup() {
 		// start
@@ -63,28 +65,31 @@ public class InMemoryCalcRepositoryTest {
 		// start（uIdが異なる）
 		startEvent2 = LineEventFixture.createLineUserEvent2(LineMessageFixture.createStartLineMessage());
 		startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
-		
 		// 数字
 		numberEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createNumberLineMessage());
 		numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
 	}
 	
-	// 異なるuIdでLinentityをsaveし、uId別にリスト作成＆追加しているかを確認します
+	/**
+	 * 異なるuIdでLinentityをsaveし、uId別にリスト作成or追加しているかを確認します
+	 */
 	@Test
 	public void testSave() {
-		// setup
 		// exercise
 		sut.save(startLineMessageEntity);
-		List<LineMessageEntity> list1 = sut.save(numberLineMessageEntity);
-		List<LineMessageEntity> list2 = sut.save(startLineMessageEntity2);
+		sut.save(numberLineMessageEntity);
+		sut.save(startLineMessageEntity2);
+		List<LineMessageEntity> list1 = sut.findByUser(startLineMessageEntity.getUserId(), 1, 2);
+		List<LineMessageEntity> list2 = sut.findByUser(startLineMessageEntity2.getUserId(), 1, 2);
 		// verify
 		assertThat(list1, hasSize(2));
 		assertThat(list2, hasSize(1));
 	}
 	
-	/* 存在しているuIdと存在しないuIdでリスト検索し、
-	　　存在しているuIdでは指定したuIdのリスト（LineEntity）のみを返し、
-	　　存在していないuIdではリストを持っていないことを確認します。*/
+	/**
+	 *  存在しているuIdと存在しないuIdでリスト検索し、
+	 *  存在しているuIdでは指定したuIdのリスト（LineEntity）のみを返し、
+	 *  存在していないuIdではリストを持っていないことを確認します。*/
 	@Test
 	public void testFindByUser() {
 		// setup
@@ -93,6 +98,7 @@ public class InMemoryCalcRepositoryTest {
 		sut.save(startLineMessageEntity2);
 		// exercise
 		List<LineMessageEntity> list1 = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 1, 1);
+		// 存在しないuIdで検索
 		List<LineMessageEntity> list2 = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 1, 1);
 		// verify
 		assertThat(list1, hasSize(2));

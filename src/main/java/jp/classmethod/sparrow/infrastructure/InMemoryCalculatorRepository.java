@@ -40,16 +40,16 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	 * @param lineMessageEntity 保存したい対象
 	 * @return 保存したリスト
 	 */
-	public List<LineMessageEntity> save(LineMessageEntity lineMessageEntity) {
+	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
 		String uId = lineMessageEntity.getUserId();
 		if (map.containsKey(uId)) {
-			(map.get(uId)).add(lineMessageEntity);
+			map.get(uId).add(lineMessageEntity);
 		} else {
-			ArrayList<LineMessageEntity> list = new ArrayList<>();
+			List<LineMessageEntity> list = new ArrayList<>();
 			list.add(lineMessageEntity);
 			map.put(uId, list);
 		}
-		return map.get(uId);
+		return lineMessageEntity;
 	}
 	
 	/**
@@ -61,14 +61,12 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		//先にこっち書く。getしたりnull判定したりする
-		List<LineMessageEntity> result;
 		if (map.containsKey(userId)) {
 			//keyが一致するリストを返す
-			result = map.get(userId);
+			return map.get(userId);
 		} else {
 			//空のリストを返す
-			result = Collections.emptyList();
+			return Collections.emptyList();
 		}
-		return result;
 	}
 }
