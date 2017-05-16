@@ -40,6 +40,11 @@ public class LineMessageFixture {
 				0.0, 0.0, null, null);
 	}
 	
+	public static LineMessage createNegativeNumberLineMessage() {
+		return new LineMessage(LineMessageType.TEXT, "325708", "12", null, null,
+				0.0, 0.0, null, null);
+	}
+	
 	public static LineMessage createInvalidLineMessage() {
 		return new LineMessage(LineMessageType.TEXT, "325708", "ああああ", null, null,
 				0.0, 0.0, null, null);
