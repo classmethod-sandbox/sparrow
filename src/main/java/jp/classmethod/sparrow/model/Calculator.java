@@ -64,7 +64,7 @@ public class Calculator {
 				StringCheck stringCheck = new StringCheck();
 				if (messageText.equals("start") || stringCheck.isNumber(messageText) == true) {
 					if (messageText.equals("start")) {
-						calculatorRepository.save(createLineMessageEntity(event, messageText)); //startの場合はここで値をsave
+						calculatorRepository.save(createLineMessageEntity(event, messageText));
 						result = "calc mode start";
 					} else {
 						//mapが既に存在するかFindByUserで確認する
@@ -72,8 +72,8 @@ public class Calculator {
 						if (list.isEmpty() == false) {
 							//数字の時はmapが存在した時のみsaveする
 							calculatorRepository.save(createLineMessageEntity(event, messageText));
-							result = "";
 						}
+						result = "";
 					}
 				} else {
 					result = "error";
