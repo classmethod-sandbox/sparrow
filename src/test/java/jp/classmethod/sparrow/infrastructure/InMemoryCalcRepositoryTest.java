@@ -16,11 +16,11 @@
 package jp.classmethod.sparrow.infrastructure;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,67 +41,51 @@ public class InMemoryCalcRepositoryTest {
 	@InjectMocks
 	InMemoryCalculatorRepository sut;
 	
-	LineEvent startEvent;
-	
-	LineEvent startEvent2;
-	
-	LineEvent numberEvent;
-	
-	LineMessageEntity startLineMessageEntity;
-	
-	LineMessageEntity startLineMessageEntity2;
-	
-	LineMessageEntity numberLineMessageEntity;
-	
 	
 	/**
-	 * テスト前にLineMessageEntityを生成します
-	 */
-	@Before
-	public void setup() {
-		// start
-		startEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
-		startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
-		// start（uIdが異なる）
-		startEvent2 = LineEventFixture.createLineUserEvent2(LineMessageFixture.createStartLineMessage());
-		startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
-		// 数字
-		numberEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createNumberLineMessage());
-		numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
-	}
-	
-	/**
-	 * 異なるuIdでLinentityをsaveし、uId別にリスト作成or追加しているかを確認します
+	 * saveメソッドの引数と戻り値が一致していることを確認します
 	 */
 	@Test
 	public void testSave() {
+		// setup
+		LineEvent startEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
+		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		// exercise
-		sut.save(startLineMessageEntity);
-		sut.save(numberLineMessageEntity);
-		sut.save(startLineMessageEntity2);
-		List<LineMessageEntity> list1 = sut.findByUser(startLineMessageEntity.getUserId(), 1, 2);
-		List<LineMessageEntity> list2 = sut.findByUser(startLineMessageEntity2.getUserId(), 1, 2);
+		LineMessageEntity actual = sut.save(startLineMessageEntity);
 		// verify
-		assertThat(list1, hasSize(2));
-		assertThat(list2, hasSize(1));
+		assertThat(actual, is(startLineMessageEntity));
 	}
 	
 	/**
-	 *  存在しているuIdと存在しないuIdでリスト検索し、
-	 *  存在しているuIdでは指定したuIdのリスト（LineEntity）のみを返し、
-	 *  存在していないuIdではリストを持っていないことを確認します。*/
+	 *  リスト検索し、指定のuIdと一致するリストのみ返すことを確認する
+	 */
 	@Test
 	public void testFindByUser() {
 		// setup
+		LineEvent startEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
+		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
+		LineEvent startEvent2 = LineEventFixture.createLineUserEvent2(LineMessageFixture.createStartLineMessage());
+		LineMessageEntity startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
 		sut.save(startLineMessageEntity);
-		sut.save(numberLineMessageEntity);
 		sut.save(startLineMessageEntity2);
 		// exercise
-		List<LineMessageEntity> list1 = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 1, 1);
-		// 存在しないuIdで検索
-		List<LineMessageEntity> list2 = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 1, 1);
+		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 1, 1);
 		// verify
-		assertThat(list1, hasSize(2));
-		assertThat(list2, hasSize(0));
+		assertThat(actual, hasSize(1));
+	}
+	
+	/**
+	 * 存在しないuIdでリスト検索し、空のリストを返すことを確認する
+	 */
+	@Test
+	public void testFindByNotExistUser() {
+		// setup
+		LineEvent startEvent = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
+		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
+		sut.save(startLineMessageEntity);
+		// exercise
+		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 1, 1);
+		// verify
+		assertThat(actual, hasSize(0));
 	}
 }
