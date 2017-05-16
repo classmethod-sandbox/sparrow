@@ -33,20 +33,42 @@ public class StringCheckTest {
 	StringCheck sut;
 	
 	
+	/**
+	 * 値が整数の時、trueを返すことを確認します
+	 */
 	@Test
-	// 文字列が数字かどうかを確認します
-	public void isNumberTest() {
+	public void integerNumberTest() {
 		// setup
-		String textNumber1 = "12";
-		String textNumber2 = "-12";
-		String textString = "あああああ";
+		String textMessage = "12";
 		// exesice
-		boolean resultNumber1 = sut.isNumber(textNumber1);
-		boolean resultNumber2 = sut.isNumber(textNumber2);
-		boolean resultString = sut.isNumber(textString);
+		boolean actual = sut.isNumber(textMessage);
 		// verify
-		assertThat(resultNumber1, is(true));
-		assertThat(resultNumber2, is(true));
-		assertThat(resultString, is(false));
+		assertThat(actual, is(true));
+	}
+	
+	/**
+	 * 値が負数の時、trueを返すことを確認します
+	 */
+	@Test
+	public void negativeNumberTest() {
+		// setup
+		String textMessage = "-12";
+		// exesice
+		boolean actual = sut.isNumber(textMessage);
+		// verify
+		assertThat(actual, is(true));
+	}
+	
+	/**
+	 * 値が数字以外の時、falseを返すことを確認します
+	 */
+	@Test
+	public void stringTest() {
+		// setup
+		String textMessage = "start";
+		// exesice
+		boolean actual = sut.isNumber(textMessage);
+		// verify
+		assertThat(actual, is(false));
 	}
 }
