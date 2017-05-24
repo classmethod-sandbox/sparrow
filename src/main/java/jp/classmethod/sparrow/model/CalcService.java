@@ -46,10 +46,11 @@ public class CalcService {
 	 *
 	 * @param signature   リクエストの署名
 	 * @param requestBody リクエストの本体
+	 * @throws IllegalArgumentException 署名検証しておかしい場合
 	 */
 	public void process(String signature, String requestBody) {
 		if (lineBotService.validateRequestSignature(signature, requestBody) == false) {
-			throw new IllegalArgumentException(); // 引数がおかしいエラーを投げる
+			throw new IllegalArgumentException();
 		}
 		try {
 			LineWebhookRequest webhookRequest = lineBotService.deserializeRequest(requestBody);
