@@ -22,9 +22,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
@@ -35,11 +32,9 @@ import jp.classmethod.sparrow.model.LineMessageFixture;
 /**
  * Created by kunita.fumiko on 2017/05/08.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class InMemoryCalcRepositoryTest {
+public class InMemoryCalculatorRepositoryTest {
 	
-	@InjectMocks
-	InMemoryCalculatorRepository sut;
+	InMemoryCalculatorRepository sut = new InMemoryCalculatorRepository();
 	
 	
 	/**
@@ -72,6 +67,10 @@ public class InMemoryCalcRepositoryTest {
 		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 1, 1);
 		// verify
 		assertThat(actual, hasSize(1));
+		assertThat(actual.get(0).getMessageId(), is("325708"));
+		assertThat(actual.get(0).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
+		assertThat(actual.get(0).getTimestamp(), is(146262947912543L));
+		assertThat(actual.get(0).getValue(), is(0));
 	}
 	
 	/**
