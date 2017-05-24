@@ -39,7 +39,7 @@ public class LineEventFixture {
 	public static LineEvent createLineUserEvent2(LineMessage lineMessage) {
 		return new LineEvent(
 				"message",
-				146262947912543L,
+				146262947912545L,
 				createLineUserEventSource2(),
 				lineMessage,
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
