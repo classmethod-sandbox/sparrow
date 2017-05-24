@@ -15,6 +15,8 @@
  */
 package jp.classmethod.sparrow.model;
 
+import static org.apache.commons.lang3.math.NumberUtils.isNumber;
+
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -61,8 +63,7 @@ public class Calculator {
 				break;
 			
 			default:
-				StringCheck stringCheck = new StringCheck();
-				if (messageText.equals("start") || stringCheck.isNumber(messageText) == true) {
+				if (messageText.equals("start") || isNumber(messageText)) {
 					if (messageText.equals("start")) {
 						calculatorRepository.save(createLineMessageEntity(event, messageText));
 						result = "calc mode start";
