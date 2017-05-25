@@ -60,13 +60,6 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	 * @return ユーザーIDが一致するリスト（該当するIDが存在しない場合は空のリストを返す）
 	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
-		//先にこっち書く。getしたりnull判定したりする
-		if (map.containsKey(userId)) {
-			//keyが一致するリストを返す
-			return map.get(userId);
-		} else {
-			//空のリストを返す
-			return Collections.emptyList();
-		}
+		return map.getOrDefault(userId, Collections.emptyList());
 	}
 }
