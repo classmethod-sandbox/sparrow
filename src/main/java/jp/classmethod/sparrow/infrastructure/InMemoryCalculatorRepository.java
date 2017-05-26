@@ -34,6 +34,10 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
 	
+	public boolean isStarted(String userId) {
+		return map.containsKey(userId);
+	}
+	
 	/**
 	 * mapにuIdが存在する場合は、リストにlineEntityを追加する
 	 * mapにuIdが存在しない場合は、リストを新規作成してmapに追加する
@@ -60,6 +64,22 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	 * @return ユーザーIDが一致するリスト（該当するIDが存在しない場合は空のリストを返す）
 	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
-		return map.getOrDefault(userId, Collections.emptyList());
+		if (map.containsKey(userId)) {
+			int countOffset = offset;
+			int countLimit = limit;
+			List<LineMessageEntity> list = new ArrayList<>();
+			int listsize = map.get(userId).size();
+			while (countLimit > 0) {
+				if (countOffset < listsize) {
+					list.add(map.get(userId).get(countOffset));
+					countOffset++;
+					countLimit--;
+				} else {
+					break;
+				}
+			}
+			return list;
+		}
+		return Collections.emptyList();
 	}
 }
