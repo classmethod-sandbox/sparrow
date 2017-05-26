@@ -15,8 +15,6 @@
  */
 package jp.classmethod.sparrow.web;
 
-import java.io.IOException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import jp.classmethod.sparrow.model.LineBotAPIException;
-import jp.classmethod.sparrow.model.LineBotService;
+import jp.classmethod.sparrow.model.CalcService;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -42,34 +39,20 @@ import jp.classmethod.sparrow.model.LineBotService;
 @RequiredArgsConstructor
 public class LineBotController {
 	
-	private final LineBotService botService;
+	private final CalcService calcService;
 	
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> receiveWebhook(@RequestHeader(value = "X-Line-Signature") String signature,
 			@RequestBody String requestBody) {
 		log.info("signature: {}", signature);
-		if (botService.validateRequestSignature(signature, requestBody) == false) {
+		try {
+			calcService.process(signature, requestBody);
+			return ResponseEntity.ok().build();
+			
+		} catch (IllegalArgumentException e) {
 			log.warn("signature did not match");
 			return ResponseEntity.badRequest().build();
 		}
-		try {
-			LineWebhookRequest webhookRequest = botService.deserializeRequest(requestBody);
-			webhookRequest.getEvents().stream()
-				.peek(event -> log.info("{}", event))
-				.forEach(event -> {
-					try {
-						botService.echoBot(event);
-					} catch (LineBotAPIException e) {
-						// Webhook requestには200を返せというドキュメント記載があるので
-						// ここでは500を返さないようにしている
-						log.error("LINE API call failed : ", e);
-					}
-				});
-		} catch (IOException e) {
-			log.error("error serializing input : ", e);
-		}
-		
-		return ResponseEntity.ok().build();
 	}
 }

@@ -16,7 +16,7 @@
 package jp.classmethod.sparrow.web;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,10 +33,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jp.classmethod.sparrow.model.LineBotService;
+import jp.classmethod.sparrow.model.CalcService;
 
 /**
- * Test for {@link ExampleController}.
+ *
  *
  * @author daisuke
  * @since #version#
@@ -45,7 +45,7 @@ import jp.classmethod.sparrow.model.LineBotService;
 public class LineBotControllerTest {
 	
 	@Mock
-	LineBotService botService;
+	CalcService calcService;
 	
 	@InjectMocks
 	LineBotController sut;
@@ -64,9 +64,6 @@ public class LineBotControllerTest {
 		LineWebhookRequest request = LineWebhookRequestFixture.createRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(request);
-		when(botService.validateRequestSignature(anyString(), anyString()))
-			.thenReturn(true);
-		when(botService.deserializeRequest(anyString())).thenReturn(request);
 		
 		// exercise
 		mvc.perform(post("/sparrow")
@@ -83,8 +80,7 @@ public class LineBotControllerTest {
 		LineWebhookRequest request = LineWebhookRequestFixture.createRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		String content = mapper.writeValueAsString(request);
-		when(botService.validateRequestSignature(anyString(), anyString()))
-			.thenReturn(false);
+		doThrow(new IllegalArgumentException()).when(calcService).process(anyString(), anyString());
 		
 		// exercise
 		mvc.perform(post("/sparrow")
