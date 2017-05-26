@@ -28,6 +28,13 @@ import java.util.List;
 public interface CalculatorRepository {
 	
 	/**
+	 * 計算がstartしているかを判定する
+	 * @param userId
+	 * @return startしている場合はtrue,していない場合はfalse
+	 */
+	boolean isStarted(String userId);
+	
+	/**
 	 * LineMessageEntityをRepositoryに保存する。
 	 * @param messageEntity
 	 * @return LineMessageEntity
