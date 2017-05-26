@@ -43,7 +43,7 @@ public class LineEventTest {
 			"{"
 					+ "  'replyToken': 'nHuyWiB7yP5Zw52FIkcQobQuGDXCTA',"
 					+ "  'type': 'message',"
-					+ "  'timestamp': 146262947912543,"
+					+ "  'timestamp': 2017052600,"
 					+ "  'source': {"
 					+ "    'type': 'user',"
 					+ "    'userId': 'U206d25c2ea6bd87c17655609a1c37cb8'"
@@ -89,7 +89,7 @@ public class LineEventTest {
 	@Test
 	public void testJson2Value() throws Exception {
 		//setup
-		LineEvent expect = LineEventFixture.createLineUserEvent(LineMessageFixture.createStartLineMessage());
+		LineEvent expect = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
 		
 		// exercise
 		ObjectContent<LineEvent> actual = json.parse(USER_EVENT_JSON);

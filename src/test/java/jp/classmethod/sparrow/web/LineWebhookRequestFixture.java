@@ -19,8 +19,6 @@ import java.util.Collections;
 
 import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
-import jp.classmethod.sparrow.model.LineMessage;
-import jp.classmethod.sparrow.model.LineMessageFixture;
 
 /**
  * Created by mochizukimasao on 2017/03/30.
@@ -31,8 +29,7 @@ import jp.classmethod.sparrow.model.LineMessageFixture;
 public class LineWebhookRequestFixture {
 	
 	public static LineWebhookRequest createRequest() {
-		LineMessage message = LineMessageFixture.createStartLineMessage();
-		LineEvent e1 = LineEventFixture.createLineUserEvent(message);
+		LineEvent e1 = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
 		return new LineWebhookRequest(Collections.singletonList(e1));
 	}
 }

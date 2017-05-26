@@ -25,30 +25,80 @@ import java.util.Collections;
  */
 public class LineEventFixture {
 	
-	public static LineEvent createLineUserEvent(LineMessage lineMessage) {
+	// startLineEventを生成
+	public static LineEvent createStartLineUserEvent(String userId, Integer timeStamp) {
 		return new LineEvent(
 				"message",
-				146262947912543L,
-				createLineUserEventSource(),
-				lineMessage,
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createStartLineMessage(),
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
 	}
 	
-	public static LineEvent createLineUserEvent2(LineMessage lineMessage) {
+	// endLineEventを生成
+	public static LineEvent createEndLineUserEvent(String userId, Integer timeStamp) {
 		return new LineEvent(
 				"message",
-				146262947912545L,
-				createLineUserEventSource2(),
-				lineMessage,
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createEndLineMessage(),
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
 	}
 	
-	public static LineUserEventSource createLineUserEventSource() {
-		return new LineUserEventSource(LineEventSourceType.USER, "U206d25c2ea6bd87c17655609a1c37cb8");
+	// ResetLineEventを生成
+	public static LineEvent createResetLineUserEvent(String userId, Integer timeStamp) {
+		return new LineEvent(
+				"message",
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createResetLineMessage(),
+				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				null,
+				null);
+	}
+	
+	// numberLineEventを生成
+	public static LineEvent createNumberLineUserEvent(String userId, Integer timeStamp) {
+		return new LineEvent(
+				"message",
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createNumberLineMessage(),
+				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				null,
+				null);
+	}
+	
+	// NegativeNumberLineEventを生成
+	public static LineEvent createNegativeNumberLineUserEvent(String userId, Integer timeStamp) {
+		return new LineEvent(
+				"message",
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createNegativeNumberLineMessage(),
+				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				null,
+				null);
+	}
+	
+	// createInvalidLineEventを生成
+	public static LineEvent createInvalidLineUserEvent(String userId, Integer timeStamp) {
+		return new LineEvent(
+				"message",
+				timeStamp,
+				createLineUserEventSource(userId),
+				LineMessageFixture.createInvalidLineMessage(),
+				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+				null,
+				null);
+	}
+	
+	public static LineUserEventSource createLineUserEventSource(String userId) {
+		return new LineUserEventSource(LineEventSourceType.USER, userId);
 	}
 	
 	public static LineUserEventSource createLineUserEventSource2() {

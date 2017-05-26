@@ -26,27 +26,27 @@ public class LineMessageFixture {
 	}
 	
 	public static LineMessage createEndLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "end", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325709", "end", null, null,
 				0.0, 0.0, null, null);
 	}
 	
 	public static LineMessage createResetLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "reset", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325710", "reset", null, null,
 				0.0, 0.0, null, null);
 	}
 	
 	public static LineMessage createNumberLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "12", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325711", "12", null, null,
 				0.0, 0.0, null, null);
 	}
 	
 	public static LineMessage createNegativeNumberLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "12", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325712", "-12", null, null,
 				0.0, 0.0, null, null);
 	}
 	
 	public static LineMessage createInvalidLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "ああああ", null, null,
+		return new LineMessage(LineMessageType.TEXT, "325713", "ああああ", null, null,
 				0.0, 0.0, null, null);
 	}
 }
