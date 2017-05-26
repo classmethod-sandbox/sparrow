@@ -34,48 +34,64 @@ public class Calculator {
 	
 	
 	/**
-	 * リクエストのテキストメッセージに応じて処理を振り分けます。
-	 * start:repositoryのsaveメソッドを起動してmapを作成します。返り値は"calc message start".
-	 * 数字:repositoryのsaveメソッドを起動して値を保存します。返り値は"".
-	 * end:calculateTotalメソッドを起動して保存リストの合計を算出します。返り値は計算結果.
-	 * reset:保存リストの合計を算出し、合計が0になる値をsaveします。返り値は"".
-	 * それ以外：無効な値として何も処理しません。返り値は"".
+	 * LineEventのtextvalueに応じて処理を行い、Linebotがユーザーに返信するメッセージを生成します。
 	 *
-	 * @param event リクエストの内容
-	 * @return result レスポンスするテキストメッセージ（リクエストのテキストメッセージに応じて異なる値を返す）
+	 * @param event LineEvent LineEvent情報
+	 * @return result Linebotがユーザーに返信するメッセージ(text)
 	 */
 	public String save(LineEvent event) {
 		String messageText;
 		messageText = event.getMessage().getText();
+		String userId = event.getSource().getId();
 		String result = null;
 		
 		switch (messageText) {
+			/* メッセージが"start"の場合:
+			 * データを登録し、"calc mode start"を返します。
+			 */
+			case "start":
+				calculatorRepository.save(createLineMessageEntity(event, messageText));
+				result = "calc mode start";
+				break;
+			
+			/* メッセージが"end"の場合:
+			 * 計算がstartしているかを確認します。
+			 * startしている場合：計算を行い、計算結果を返します。計算後は登録データをリセットします。
+			 * startしていない場合：""を返します。*/
 			case "end":
-				//計算結果を代入する
-				result = String.valueOf(calculateTotal(createLineMessageEntity(event, messageText)));
-				resetList(createLineMessageEntity(event, messageText));
+				if (calculatorRepository.isStarted(userId)) {
+					result = String.valueOf(calculateTotal(createLineMessageEntity(event, messageText)));
+					resetList(createLineMessageEntity(event, messageText));
+				} else {
+					result = "";
+				}
 				break;
 			
+			/* メッセージが"reset"の場合：
+			 * 計算がstartしているかを確認します。
+			 * startしている場合：登録データをリセットし、"reset"を返します。
+			 * startしていない場合：""を返します。 */
 			case "reset":
-				resetList(createLineMessageEntity(event, messageText));
-				//resetの場合は発言しない
-				result = "reset";
+				if (calculatorRepository.isStarted(userId)) {
+					resetList(createLineMessageEntity(event, messageText));
+					result = "reset";
+				} else {
+					result = "";
+				}
 				break;
 			
+			/* メッセージが数字または仕様で定義されていない無効な値の場合：
+			 * 数値かどうかを確認します。
+			 * 数値の場合：計算がstartしているかを確認し、""を返します。
+			 * 　startしている場合：データを登録します。
+			 * 　startしていない場合：何も行いません。
+			 * 数値以外の場合："error"を返します */
 			default:
-				if (messageText.equals("start") || isNumber(messageText)) {
-					if (messageText.equals("start")) {
+				if (isNumber(messageText)) {
+					if (calculatorRepository.isStarted(userId)) {
 						calculatorRepository.save(createLineMessageEntity(event, messageText));
-						result = "calc mode start";
-					} else {
-						//mapが既に存在するかFindByUserで確認する
-						List<LineMessageEntity> list = calculatorRepository.findByUser(event.getSource().getId(), 1, 2);
-						if (list.isEmpty() == false) {
-							//数字の時はmapが存在した時のみsaveする
-							calculatorRepository.save(createLineMessageEntity(event, messageText));
-						}
-						result = "";
 					}
+					result = "";
 				} else {
 					result = "error";
 				}
@@ -85,27 +101,32 @@ public class Calculator {
 	}
 	
 	/**
-	 * repositoryからユーザーIDが一致するリストを取得します。
-	 * 取得したリストからvalueの合計を算出します。
-	 * @param lineMessageEntity リクエストの情報
-	 * @return 計算結果
+	 * 受け取ったLineMessageEntityのuserIdと一致するデータを取得し、データの合計値を算出します。
+	 *
+	 * @param lineMessageEntity LineMessageEntity情報
+	 * @return total userIdが一致するデータの合計値
 	 */
 	public Integer calculateTotal(LineMessageEntity lineMessageEntity) {
 		String uId = lineMessageEntity.getUserId();
-		List<LineMessageEntity> list = calculatorRepository.findByUser(uId, 1, 2);
-		Integer total = 0;
-		for (LineMessageEntity lineMessageValue : list) {
-			total += lineMessageValue.getValue();
-		}
+		int listSize;
+		int offset = 0;	// 表示開始位置
+		int limit = 5;	// 表示行数
+		int total = 0;	// 合計値
+		do {
+			List<LineMessageEntity> list = calculatorRepository.findByUser(uId, offset, limit);
+			for (LineMessageEntity lineMessageValue : list) {
+				total += lineMessageValue.getValue();
+			}
+			offset = offset + limit;
+			listSize = list.size();
+		} while (listSize > 0);
 		return total;
 	}
 	
 	/**
-	 * uIdが一致するリストの合計結果を算出します。
-	 * リスト合計が0になるよう符号を反転し、LineEntityのValueを再セットします。
-	 * LineEntityをリストに追加します。（リスト合計は0になります）
+	 * 受け取ったLineMessageEntityのuserIdと一致するデータの合計値を0にします。
 	 * @param lineMessageEntity リクエストの情報
-	 * @return 再計算した合計結果
+	 * @return 再計算した合計値（常に0を返します）
 	 */
 	public Integer resetList(LineMessageEntity lineMessageEntity) {
 		Integer total = calculateTotal(lineMessageEntity);
