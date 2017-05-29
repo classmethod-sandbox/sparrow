@@ -203,6 +203,7 @@ public class CalclatorTest {
 		
 		// exesice
 		Integer result = sut.calculateTotal(endLineMessageEntity);
+		
 		// varify
 		assertThat(result, is(72));
 	}
