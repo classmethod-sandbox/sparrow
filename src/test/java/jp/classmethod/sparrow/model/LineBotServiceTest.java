@@ -122,7 +122,7 @@ public class LineBotServiceTest {
 	@Test(expected = LineBotAPIException.class)
 	public void testLineBotAPIFailed() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+		LineEvent event = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		when(httpClient.execute(any())).thenThrow(new IOException());
 		
 		// exercise

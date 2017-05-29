@@ -47,7 +47,7 @@ public class CalclatorTest {
 	public void testStartSave() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		// exesice
 		String actual = sut.save(startEvent);
 		// verify
@@ -61,10 +61,10 @@ public class CalclatorTest {
 	public void testEndSave() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052640);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
+		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		sut.save(startEvent);
 		sut.save(numberEvent);
 		// exesice
@@ -79,7 +79,7 @@ public class CalclatorTest {
 	@Test
 	public void testNotStartedEndSave() {
 		// setup
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052640);
+		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		// exesice
 		String actual = sut.save(endEvent);
 		// verify
@@ -93,9 +93,9 @@ public class CalclatorTest {
 	public void testResetSave() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052630);
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
 		sut.save(startEvent);
 		// exesice
 		String actual = sut.save(resetEvent);
@@ -110,7 +110,7 @@ public class CalclatorTest {
 	public void testNotStartedResetSave() {
 		// setup
 		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052630);
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
 		// exesice
 		String actual = sut.save(resetEvent);
 		// verify
@@ -124,9 +124,9 @@ public class CalclatorTest {
 	public void testNumberSave() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		sut.save(startEvent);
 		// exesice
 		String actual = sut.save(numberEvent);
@@ -141,7 +141,7 @@ public class CalclatorTest {
 	public void testNotStartedNumberSave() {
 		// setup
 		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		// exesice
 		String actual = sut.save(numberEvent);
 		// verify
@@ -155,7 +155,7 @@ public class CalclatorTest {
 	public void testInvalidSave() {
 		// setup
 		LineEvent invalidEvent =
-				LineEventFixture.createInvalidLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052650);
+				LineEventFixture.createInvalidLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379120);
 		// exesice
 		String actual = sut.save(invalidEvent);
 		// verify
@@ -169,20 +169,20 @@ public class CalclatorTest {
 	public void testCalculateTotal() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent1 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		LineEvent numberEvent2 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052611);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
 		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052612);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
 		LineEvent numberEvent4 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052613);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378883);
 		LineEvent numberEvent5 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052614);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378884);
 		LineEvent numberEvent6 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052615);
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052640);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378885);
+		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
@@ -215,11 +215,11 @@ public class CalclatorTest {
 	public void testResetIntegerList() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052630);
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
 		
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
@@ -241,11 +241,11 @@ public class CalclatorTest {
 	public void testResetNegativeNumberList() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent negativeNumberEvent =
-				LineEventFixture.createNegativeNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052620);
+				LineEventFixture.createNegativeNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378940);
 		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052630);
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
 		
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(negativeNumberEvent);
@@ -267,14 +267,14 @@ public class CalclatorTest {
 	public void testCreateStartLineMessageEntity() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		String messageText = startEvent.getMessage().getText();
 		// exesice
 		LineMessageEntity startLineMessageEntity = sut.createLineMessageEntity(startEvent, messageText);
 		// velify
 		assertThat(startLineMessageEntity.getMessageId(), is("325708"));
 		assertThat(startLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(startLineMessageEntity.getTimestamp(), is(2017052600L));
+		assertThat(startLineMessageEntity.getTimestamp(), is(1499378820L));
 		assertThat(startLineMessageEntity.getValue(), is(0));
 	}
 	
@@ -284,14 +284,14 @@ public class CalclatorTest {
 	@Test
 	public void testCreateEndLineMessageEntity() {
 		// setup
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052640);
+		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		String messageText = endEvent.getMessage().getText();
 		// exesice
 		LineMessageEntity endLineMessageEntity = sut.createLineMessageEntity(endEvent, messageText);
 		// velify
 		assertThat(endLineMessageEntity.getMessageId(), is("325709"));
 		assertThat(endLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(endLineMessageEntity.getTimestamp(), is(2017052640L));
+		assertThat(endLineMessageEntity.getTimestamp(), is(1499379060L));
 		assertThat(endLineMessageEntity.getValue(), is(0));
 	}
 	
@@ -302,14 +302,14 @@ public class CalclatorTest {
 	public void testCreateResetLineMessageEntity() {
 		// setup
 		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052630);
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
 		String messageText = resetEvent.getMessage().getText();
 		// exesice
 		LineMessageEntity resetLineMessageEntity = sut.createLineMessageEntity(resetEvent, messageText);
 		// velify
 		assertThat(resetLineMessageEntity.getMessageId(), is("325710"));
 		assertThat(resetLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(resetLineMessageEntity.getTimestamp(), is(2017052630L));
+		assertThat(resetLineMessageEntity.getTimestamp(), is(1499379000L));
 		assertThat(resetLineMessageEntity.getValue(), is(0));
 	}
 	
@@ -320,14 +320,14 @@ public class CalclatorTest {
 	public void testCreateNumberLineMessageEntity() {
 		// setup
 		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052610);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		String messageText = numberEvent.getMessage().getText();
 		// exesice
 		LineMessageEntity numberLineMessageEntity = sut.createLineMessageEntity(numberEvent, messageText);
 		// velify
 		assertThat(numberLineMessageEntity.getMessageId(), is("325711"));
 		assertThat(numberLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(numberLineMessageEntity.getTimestamp(), is(2017052610L));
+		assertThat(numberLineMessageEntity.getTimestamp(), is(1499378880L));
 		assertThat(numberLineMessageEntity.getValue(), is(12));
 	}
 }
