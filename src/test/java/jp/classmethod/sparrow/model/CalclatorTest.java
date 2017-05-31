@@ -244,12 +244,13 @@ public class CalclatorTest {
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity4)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity5)).thenCallRealMethod();
 		when(inMemoryCalculatorRepository.save(numberLineMessageEntity6)).thenCallRealMethod();
+		sut.isStarted(endEvent);
 		when(inMemoryCalculatorRepository.save(endLineMessageEntity)).thenCallRealMethod();
 		
 		// exesice
-		Integer result = sut.calculateTotal(endEvent);
+		int result = sut.calculateTotal(endEvent);
 		
-		// varify
+		// verify
 		assertThat(result, is(60));
 	}
 	

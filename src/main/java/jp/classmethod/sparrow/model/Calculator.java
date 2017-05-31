@@ -92,8 +92,9 @@ public class Calculator {
 	 *  @return 計算開始状態の場合はtrue、未開始の場合はfalseを返します
 	 */
 	public boolean isStarted(LineEvent event) {
+		String userId = event.getSource().getId();
 		try {
-			calculatorRepository.latestStartLine(createLineMessageEntity(event));
+			calculatorRepository.indexOfLatestStart(userId);
 		} catch (StartIndexException e) {
 			return false;
 		}
@@ -112,7 +113,7 @@ public class Calculator {
 		String userId = event.getSource().getId();
 		// startのindex取得
 		try {
-			startLine = calculatorRepository.latestStartLine(createLineMessageEntity(event));
+			startLine = calculatorRepository.indexOfLatestStart(userId);
 		} catch (StartIndexException e) {
 			return null;
 		}
@@ -120,6 +121,7 @@ public class Calculator {
 			int offset = 0;	// 表示開始位置
 			int limit = 5;	// 表示行数
 			while (startLine >= offset) {
+				
 				// データが取得行数(limit)以下の場合、取得行数を調整
 				if ((startLine - offset) < limit) {
 					limit = (startLine - offset) + 1;

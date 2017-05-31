@@ -29,11 +29,11 @@ public interface CalculatorRepository {
 	
 	/**
 	 * userIdが一致するデータにアクセスし、indexを返します。
-	 * @param lineMessageEntity
-	 * @return 最新の"start"のindexを返します、startしていない場合はindexは-1を返します
-	 * @throws
+	 * @param userId
+	 * @return 最新の"start"のindexを返します
+	 * @throws StartIndexException startしていない場合はStartIndexExceptionを投げます
 	 */
-	Integer latestStartLine(LineMessageEntity lineMessageEntity) throws StartIndexException;
+	int indexOfLatestStart(String userId) throws StartIndexException;
 	
 	/**
 	 * LineMessageEntityを保存します。

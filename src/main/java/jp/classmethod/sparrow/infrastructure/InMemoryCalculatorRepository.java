@@ -37,17 +37,15 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
 	
-	public Integer latestStartLine(LineMessageEntity lineMessageEntity) throws StartIndexException {
-		String userId = lineMessageEntity.getUserId();
-		
+	public int indexOfLatestStart(String userId) throws StartIndexException {
 		if (map.containsKey(userId)) {
 			// userIdが一致するリストを取得
 			List<LineMessageEntity> list = map.get(userId);
 			// 降順にsort
-			Collections.sort(list, (e1, e2) -> (int) (e2.getTimestamp() - e1.getTimestamp()));
+			Collections.sort(list, (e1, e2) -> Long.compare(e2.getTimestamp(), e1.getTimestamp()));
 			
 			// collectionから"start"を検索する
-			for (LineMessageEntity collections : map.get(userId)) {
+			for (LineMessageEntity collections : list) {
 				String cllectionValue = collections.getValue();
 				if (isNumber(cllectionValue) == false && cllectionValue.equals("start")) {
 					return map.get(userId).indexOf(collections);
@@ -71,15 +69,10 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int listsize = offset + limit;
-			if (listsize > limit + offset) {
-				for (LineMessageEntity value : map.get(userId)) {
-					value.getValue();
-				}
-				return map.get(userId).subList(offset, limit);
-			} else {
-				return map.get(userId).subList(offset, listsize);
-			}
+			int toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
+			// 降順にsort
+			Collections.sort(map.get(userId), (e1, e2) -> Long.compare(e2.getTimestamp(), e1.getTimestamp()));
+			return map.get(userId).subList(offset, toIndex);
 		} else {
 			return Collections.emptyList();
 		}

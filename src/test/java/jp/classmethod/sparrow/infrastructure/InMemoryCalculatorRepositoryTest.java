@@ -47,16 +47,13 @@ public class InMemoryCalculatorRepositoryTest {
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent1 =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		LineEvent numberEvent2 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
-		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
 		sut.save(startLineMessageEntity);
 		sut.save(numberLineMessageEntity1);
 		
 		// exercise
-		int actual = sut.latestStartLine(numberLineMessageEntity2);
+		int actual = sut.indexOfLatestStart("U206d25c2ea6bd87c17655609a1c37cb8");
 		
 		// verify
 		assertThat(actual, is(1));
@@ -67,13 +64,8 @@ public class InMemoryCalculatorRepositoryTest {
 	 */
 	@Test(expected = StartIndexException.class)
 	public void testNoLatestStartLine() throws StartIndexException {
-		// setup
-		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
-		
 		// exercise
-		sut.latestStartLine(numberLineMessageEntity);
+		sut.indexOfLatestStart("U206d25c2ea6bd87c17655609a1c37cb8");
 	}
 	
 	/**
@@ -119,8 +111,8 @@ public class InMemoryCalculatorRepositoryTest {
 		sut.save(startLineMessageEntityUser1);
 		sut.save(numberLineMessageEntity1);
 		sut.save(numberLineMessageEntity2);
+		sut.indexOfLatestStart(endEvent.getSource().getId());
 		sut.save(endLineMessageEntity);
-		sut.latestStartLine(endLineMessageEntity);
 		sut.save(startLineMessageEntityUser2);
 		
 		// exercise
@@ -164,8 +156,8 @@ public class InMemoryCalculatorRepositoryTest {
 		sut.save(startLineMessageEntityUser1);
 		sut.save(numberLineMessageEntity1);
 		sut.save(numberLineMessageEntity2);
+		sut.indexOfLatestStart(endLineMessageEntity.getUserId());
 		sut.save(endLineMessageEntity);
-		sut.latestStartLine(endLineMessageEntity);
 		sut.save(startLineMessageEntityUser2);
 		
 		// exercise
@@ -194,7 +186,6 @@ public class InMemoryCalculatorRepositoryTest {
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
 		sut.save(startLineMessageEntity);
-		sut.latestStartLine(startLineMessageEntity);
 		
 		// exercise
 		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 0, 5);
