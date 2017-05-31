@@ -83,13 +83,17 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+	compile "org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion"
+	
+	// others
 	compile "jp.xet.spar-wings:spar-wings-httpexceptions:$sparWingsVersion"
 	compile "org.apache.httpcomponents:httpclient:4.5.3"
 	compile "org.apache.commons:commons-lang3:3.0"
-
-	// other
+	compile "org.flywaydb:flyway-core:$flywayVersion"
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
 
+	compile "com.h2database:h2:1.4.195"
+	
 	// testing
 	testCompileOnly "org.projectlombok:lombok:$lombokVersion" // http://qiita.com/gillax/items/1cbcff003384087f2db1
 	testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
