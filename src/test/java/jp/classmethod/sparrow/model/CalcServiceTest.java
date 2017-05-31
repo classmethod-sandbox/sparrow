@@ -52,7 +52,7 @@ public class CalcServiceTest {
 	public void budValidateTest() {
 		// setup
 		String signature = "/v4Ra2mMN4ZjnjABJsDpibMaI2x8ZAg0Tl5UNDLPvjE=";
-		String requestBody = "{\"events\":[{\"type\":\"message\",\"timestamp\":146262947912543,"
+		String requestBody = "{\"events\":[{\"type\":\"message\",\"timestamp\":1499378820,"
 				+ "\"source\":{\"type\":\"user\",\"type\":\"user\",\"userId\":\"U206d25c2ea6bd87c17655609a1c37cb8\"},"
 				+ "\"message\":{\"type\":\"text\",\"id\":\"325708\",\"text\":\"start\",\"latitude\":0.0,\"longitude\":0.0},"
 				+ "\"replyToken\":\"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA\"}]}";

@@ -65,21 +65,15 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int countOffset = offset;
-			int countLimit = limit;
-			List<LineMessageEntity> list = new ArrayList<>();
 			int listsize = map.get(userId).size();
-			while (countLimit > 0) {
-				if (countOffset < listsize) {
-					list.add(map.get(userId).get(countOffset));
-					countOffset++;
-					countLimit--;
-				} else {
-					break;
-				}
+			
+			if (listsize > limit + offset) {
+				return map.get(userId).subList(offset, limit);
+			} else {
+				return map.get(userId).subList(offset, listsize);
 			}
-			return list;
+		} else {
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
 	}
 }

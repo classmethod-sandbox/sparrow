@@ -119,7 +119,7 @@ public class Calculator {
 			}
 			offset = offset + limit;
 			listSize = list.size();
-		} while (listSize > 0);
+		} while (listSize >= offset);
 		return total;
 	}
 	
