@@ -15,6 +15,8 @@
  */
 package jp.classmethod.sparrow.infrastructure;
 
+import static org.apache.commons.lang3.math.NumberUtils.isNumber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import jp.classmethod.sparrow.model.CalculatorRepository;
 import jp.classmethod.sparrow.model.LineMessageEntity;
+import jp.classmethod.sparrow.model.StartIndexException;
 
 /**
  * Created by kunita.fumiko on 2017/04/13.
@@ -34,44 +37,42 @@ public class InMemoryCalculatorRepository implements CalculatorRepository {
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
 	
-	public boolean isStarted(String userId) {
-		return map.containsKey(userId);
+	public int indexOfLatestStart(String userId) throws StartIndexException {
+		if (map.containsKey(userId)) {
+			// userIdが一致するリストを取得
+			List<LineMessageEntity> list = map.get(userId);
+			// 降順にsort
+			Collections.sort(list, (e1, e2) -> Long.compare(e2.getTimestamp(), e1.getTimestamp()));
+			
+			// collectionから"start"を検索する
+			for (LineMessageEntity collections : list) {
+				String cllectionValue = collections.getValue();
+				if (isNumber(cllectionValue) == false && cllectionValue.equals("start")) {
+					return map.get(userId).indexOf(collections);
+				}
+			}
+		}
+		throw new StartIndexException();
 	}
 	
-	/**
-	 * mapにuIdが存在する場合は、リストにlineEntityを追加する
-	 * mapにuIdが存在しない場合は、リストを新規作成してmapに追加する
-	 * @param lineMessageEntity 保存したい対象
-	 * @return 保存したリスト
-	 */
 	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
-		String uId = lineMessageEntity.getUserId();
-		if (map.containsKey(uId)) {
-			map.get(uId).add(lineMessageEntity);
+		String userId = lineMessageEntity.getUserId();
+		if (map.containsKey(userId)) {
+			map.get(userId).add(lineMessageEntity);
 		} else {
 			List<LineMessageEntity> list = new ArrayList<>();
 			list.add(lineMessageEntity);
-			map.put(uId, list);
+			map.put(userId, list);
 		}
 		return lineMessageEntity;
 	}
 	
-	/**
-	 * リクエストのユーザーIDと一致するデータを抽出する
-	 * @param userId ユーザーID
-	 * @param offset 取得にあたって読み飛ばす
-	 * @param limit　取得にあたって制限する個数
-	 * @return ユーザーIDが一致するリスト（該当するIDが存在しない場合は空のリストを返す）
-	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int listsize = map.get(userId).size();
-			
-			if (listsize > limit + offset) {
-				return map.get(userId).subList(offset, limit);
-			} else {
-				return map.get(userId).subList(offset, listsize);
-			}
+			int toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
+			// 降順にsort
+			Collections.sort(map.get(userId), (e1, e2) -> Long.compare(e2.getTimestamp(), e1.getTimestamp()));
+			return map.get(userId).subList(offset, toIndex);
 		} else {
 			return Collections.emptyList();
 		}

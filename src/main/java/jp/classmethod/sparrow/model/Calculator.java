@@ -40,125 +40,117 @@ public class Calculator {
 	 * @return result Linebotがユーザーに返信するメッセージ(text)
 	 */
 	public String save(LineEvent event) {
-		String messageText;
-		messageText = event.getMessage().getText();
-		String userId = event.getSource().getId();
-		String result = null;
+		String messageText = event.getMessage().getText();
 		
 		switch (messageText) {
-			/* メッセージが"start"の場合:
-			 * データを登録し、"calc mode start"を返します。
-			 */
+			/* メッセージが"start"の場合:データを登録し、"calc mode start"を返します。 */
 			case "start":
-				calculatorRepository.save(createLineMessageEntity(event, messageText));
-				result = "calc mode start";
-				break;
+				calculatorRepository.save(createLineMessageEntity(event));
+				return "calc mode start";
 			
-			/* メッセージが"end"の場合:
-			 * 計算がstartしているかを確認します。
-			 * startしている場合：計算を行い、計算結果を返します。計算後は登録データをリセットします。
-			 * startしていない場合：""を返します。*/
+			/* メッセージが"end"の場合：計算開始状態かを確認し、以下の結果を返します。
+			 * 計算を開始している場合：登録データにアクセスし、計算結果を返します。
+			 * 計算を開始していない場合：""を返します。*/
 			case "end":
-				if (calculatorRepository.isStarted(userId)) {
-					result = String.valueOf(calculateTotal(createLineMessageEntity(event, messageText)));
-					resetList(createLineMessageEntity(event, messageText));
+				if (isStarted(event)) {
+					calculatorRepository.save(createLineMessageEntity(event));
+					return String.valueOf(calculateTotal(event));
 				} else {
-					result = "";
+					return "";
 				}
-				break;
-			
-			/* メッセージが"reset"の場合：
-			 * 計算がstartしているかを確認します。
-			 * startしている場合：登録データをリセットし、"reset"を返します。
-			 * startしていない場合：""を返します。 */
+				
+				/* メッセージが"reset"の場合：計算開始状態かを確認し、以下の結果を返します。
+				 * 計算を開始している場合：登録データをリセットし、"reset"を返します。
+				 * 計算を開始していない場合：""を返します。 */
 			case "reset":
-				if (calculatorRepository.isStarted(userId)) {
-					resetList(createLineMessageEntity(event, messageText));
-					result = "reset";
+				if (isStarted(event)) {
+					calculatorRepository.save(createLineMessageEntity(event));
+					return "reset";
 				} else {
-					result = "";
+					return "";
 				}
-				break;
-			
-			/* メッセージが数字または仕様で定義されていない無効な値の場合：
-			 * 数値かどうかを確認します。
-			 * 数値の場合：計算がstartしているかを確認し、""を返します。
-			 * 　startしている場合：データを登録します。
-			 * 　startしていない場合：何も行いません。
-			 * 数値以外の場合："error"を返します */
+				
+				/* メッセージが数字または仕様で定義されていない無効な値の場合：数値かどうかを確認し、以下の結果を返します。
+				 * 数値の場合：""を返します。
+				 * 数値以外の場合："error"を返します */
 			default:
 				if (isNumber(messageText)) {
-					if (calculatorRepository.isStarted(userId)) {
-						calculatorRepository.save(createLineMessageEntity(event, messageText));
+					if (isStarted(event)) {
+						calculatorRepository.save(createLineMessageEntity(event));
 					}
-					result = "";
+					return "";
 				} else {
-					result = "error";
+					return "error";
 				}
-				break;
 		}
-		return result;
 	}
 	
 	/**
-	 * 受け取ったLineMessageEntityのuserIdと一致するデータを取得し、データの合計値を算出します。
+	 *  引数で受けLineEventのuserが計算開始状態かを確認します
 	 *
-	 * @param lineMessageEntity LineMessageEntity情報
+	 *  @param event LineEvent情報
+	 *  @return 計算開始状態の場合はtrue、未開始の場合はfalseを返します
+	 */
+	public boolean isStarted(LineEvent event) {
+		String userId = event.getSource().getId();
+		try {
+			calculatorRepository.indexOfLatestStart(userId);
+		} catch (StartIndexException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 取る引数で受け取るLineMessageEntityのuserIdと一致するデータを取得し、データの合計値を算出します。
+	 *
+	 * @param event LineEvent情報
 	 * @return total userIdが一致するデータの合計値
 	 */
-	public Integer calculateTotal(LineMessageEntity lineMessageEntity) {
-		String uId = lineMessageEntity.getUserId();
-		int listSize;
-		int offset = 0;	// 表示開始位置
-		int limit = 5;	// 表示行数
+	public Integer calculateTotal(LineEvent event) {
 		int total = 0;	// 合計値
-		do {
-			List<LineMessageEntity> list = calculatorRepository.findByUser(uId, offset, limit);
-			for (LineMessageEntity lineMessageValue : list) {
-				total += lineMessageValue.getValue();
+		int startLine;
+		String userId = event.getSource().getId();
+		// startのindex取得
+		try {
+			startLine = calculatorRepository.indexOfLatestStart(userId);
+		} catch (StartIndexException e) {
+			return null;
+		}
+		if (startLine > 0) {
+			int offset = 0;	// 表示開始位置
+			int limit = 5;	// 表示行数
+			while (startLine >= offset) {
+				
+				// データが取得行数(limit)以下の場合、取得行数を調整
+				if ((startLine - offset) < limit) {
+					limit = (startLine - offset) + 1;
+				}
+				List<LineMessageEntity> list = calculatorRepository.findByUser(userId, offset, limit);
+				for (LineMessageEntity lineMessageValue : list) {
+					if (isNumber(lineMessageValue.getValue())) {
+						total += Integer.valueOf(lineMessageValue.getValue());
+					}
+				}
+				offset = offset + limit;
+				limit = (startLine - offset) + 1;
 			}
-			offset = offset + limit;
-			listSize = list.size();
-		} while (listSize >= offset);
+		}
 		return total;
 	}
 	
 	/**
-	 * 受け取ったLineMessageEntityのuserIdと一致するデータの合計値を0にします。
-	 * @param lineMessageEntity リクエストの情報
-	 * @return 再計算した合計値（常に0を返します）
-	 */
-	public Integer resetList(LineMessageEntity lineMessageEntity) {
-		Integer total = calculateTotal(lineMessageEntity);
-		lineMessageEntity.setValue(-total); //符号を反転
-		calculatorRepository.save(lineMessageEntity);
-		return calculateTotal(lineMessageEntity);
-	}
-	
-	/**
-	 * 受け取ったLineEventからLineMessageEntityを生成します
-	 * メッセージテキストの内容により異なるLineMessageEntityのValueをセットします。
+	 * 引数で受け取るLineEventからLineMessageEntityを生成します
+	 *
 	 * @param event LineEvent情報
-	 * @param messageText リクエストのテキストメッセージの値
 	 * @return lineMessageEntity
 	 */
-	public LineMessageEntity createLineMessageEntity(LineEvent event, String messageText) {
+	public LineMessageEntity createLineMessageEntity(LineEvent event) {
 		LineMessageEntity lineMessageEntity = new LineMessageEntity();
 		lineMessageEntity.setMessageId(event.getMessage().getId());
 		lineMessageEntity.setUserId(event.getSource().getId());
 		lineMessageEntity.setTimestamp(event.getTimestamp());
-		
-		switch (messageText) {
-			case "start":
-			case "end":
-			case "reset":
-				lineMessageEntity.setValue(0);
-				break;
-			//　数字の時
-			default:
-				lineMessageEntity.setValue(Integer.valueOf(event.getMessage().getText()));
-				break;
-		}
+		lineMessageEntity.setValue(event.getMessage().getText());
 		return lineMessageEntity;
 	}
 }

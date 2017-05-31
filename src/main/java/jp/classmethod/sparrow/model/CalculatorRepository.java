@@ -28,27 +28,28 @@ import java.util.List;
 public interface CalculatorRepository {
 	
 	/**
-	 * 計算がstartしているかを判定する
+	 * userIdが一致するデータにアクセスし、indexを返します。
 	 * @param userId
-	 * @return startしている場合はtrue,していない場合はfalse
+	 * @return 最新の"start"のindexを返します
+	 * @throws StartIndexException startしていない場合はStartIndexExceptionを投げます
 	 */
-	boolean isStarted(String userId);
+	int indexOfLatestStart(String userId) throws StartIndexException;
 	
 	/**
-	 * LineMessageEntityをRepositoryに保存する。
-	 * @param messageEntity
-	 * @return LineMessageEntity
+	 * LineMessageEntityを保存します。
+	 *
+	 * @param lineMessageEntity
+	 * @return 引数で受け取ったLineMessageEntityをそのまま返します
 	 */
-	LineMessageEntity save(LineMessageEntity messageEntity);
+	LineMessageEntity save(LineMessageEntity lineMessageEntity);
 	
 	/**
-	 * ユーザの発言リストを返す。
-	 * リストはtimestampの降順になるように実装すること。
-	 * offsetの位置(0始まり)からlimitに指定した数以下の要素を返す。
+	 * 引数で受け取るuserIdと一致するoffsetの位置(0始まり)からlimitに指定した数以下の要素を降順で返します
+	 *
 	 * @param userId ユーザーID
-	 * @param offset
-	 * @param limit
-	 * @return
+	 * @param offset 読み飛ばす行数
+	 * @param limit	取得行数
+	 * @return offsetからlimitに指定した数以下の要素を返します。一致するデータがない場合は空のコレクションを返します。
 	 */
 	List<LineMessageEntity> findByUser(String userId, int offset, int limit);
 }

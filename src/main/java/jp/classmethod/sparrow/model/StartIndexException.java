@@ -16,16 +16,11 @@
 package jp.classmethod.sparrow.model;
 
 /**
- * Created by kunita.fumiko on 2017/05/12.
+ * Created by kunita.fumiko on 2017/05/31.
  */
-public class LineMessageEntityFixture {
-	
-	public static LineMessageEntity createLineEntity(LineEvent event) {
-		LineMessageEntity startLineEntity = new LineMessageEntity();
-		startLineEntity.setMessageId(event.getMessage().getId());
-		startLineEntity.setUserId(event.getSource().getId());
-		startLineEntity.setTimestamp(event.getTimestamp());
-		startLineEntity.setValue(event.getMessage().getText());
-		return startLineEntity;
+@SuppressWarnings("serial")
+public class StartIndexException extends Exception {
+	public StartIndexException() {
+		super();
 	}
 }

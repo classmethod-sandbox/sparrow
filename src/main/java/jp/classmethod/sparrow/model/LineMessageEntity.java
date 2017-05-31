@@ -32,5 +32,5 @@ public class LineMessageEntity {
 	
 	private long timestamp;
 	
-	private int value;
+	private String value;
 }

@@ -27,6 +27,7 @@ import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
 import jp.classmethod.sparrow.model.LineMessageEntity;
 import jp.classmethod.sparrow.model.LineMessageEntityFixture;
+import jp.classmethod.sparrow.model.StartIndexException;
 
 /**
  * Created by kunita.fumiko on 2017/05/08.
@@ -37,33 +38,34 @@ public class InMemoryCalculatorRepositoryTest {
 	
 	
 	/**
-	 * 計算がstartしている時にisStartedメソッドがtrueを返すことを確認します
+	 * 計算開始状態の時、startのindex(1)を返すことを確認します
 	 */
 	@Test
-	public void testIsStarted() {
+	public void testLatestStartLine() throws StartIndexException {
 		// setup
 		LineEvent startEvent =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
+		LineEvent numberEvent1 =
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
+		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
 		sut.save(startLineMessageEntity);
+		sut.save(numberLineMessageEntity1);
 		
 		// exercise
-		boolean actual = sut.isStarted("U206d25c2ea6bd87c17655609a1c37cb8");
+		int actual = sut.indexOfLatestStart("U206d25c2ea6bd87c17655609a1c37cb8");
 		
 		// verify
-		assertThat(actual, is(true));
+		assertThat(actual, is(1));
 	}
 	
 	/**
-	 * 計算がstartしていない時にisStartedメソッドがfalseを返すことを確認します
+	 * 計算未開始状態の時、StartIndexExceptionが発生することを確認します
 	 */
-	@Test
-	public void testIsNotStarted() {
+	@Test(expected = StartIndexException.class)
+	public void testNoLatestStartLine() throws StartIndexException {
 		// exercise
-		boolean actual = sut.isStarted("U206d25c2ea6bd87c17655609a1c37cb8");
-		
-		// verify
-		assertThat(actual, is(false));
+		sut.indexOfLatestStart("U206d25c2ea6bd87c17655609a1c37cb8");
 	}
 	
 	/**
@@ -84,10 +86,10 @@ public class InMemoryCalculatorRepositoryTest {
 	}
 	
 	/**
-	 *  指定のuIdと一致しているリストの内、1ページ目を返すことを確認する
+	 *  指定のuserIdと一致しているリストを返すことを確認する
 	 */
 	@Test
-	public void testFindByUser() {
+	public void testFindByUser() throws StartIndexException {
 		// setup
 		LineEvent startEventUser1 =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
@@ -95,66 +97,44 @@ public class InMemoryCalculatorRepositoryTest {
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		LineEvent numberEvent2 =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
-		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
-		LineEvent numberEvent4 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378883);
-		LineEvent numberEvent5 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378884);
-		LineEvent numberEvent6 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378885);
+		LineEvent endEvent =
+				LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378886);
 		LineEvent startEventUser2 =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb9", 1499378821);
 		
 		LineMessageEntity startLineMessageEntityUser1 = LineMessageEntityFixture.createLineEntity(startEventUser1);
 		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
 		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
-		LineMessageEntity numberLineMessageEntity3 = LineMessageEntityFixture.createLineEntity(numberEvent3);
-		LineMessageEntity numberLineMessageEntity4 = LineMessageEntityFixture.createLineEntity(numberEvent4);
-		LineMessageEntity numberLineMessageEntity5 = LineMessageEntityFixture.createLineEntity(numberEvent5);
-		LineMessageEntity numberLineMessageEntity6 = LineMessageEntityFixture.createLineEntity(numberEvent6);
+		LineMessageEntity endLineMessageEntity = LineMessageEntityFixture.createLineEntity(endEvent);
 		LineMessageEntity startLineMessageEntityUser2 = LineMessageEntityFixture.createLineEntity(startEventUser2);
+		
 		sut.save(startLineMessageEntityUser1);
 		sut.save(numberLineMessageEntity1);
 		sut.save(numberLineMessageEntity2);
-		sut.save(numberLineMessageEntity3);
-		sut.save(numberLineMessageEntity4);
-		sut.save(numberLineMessageEntity5);
-		sut.save(numberLineMessageEntity6);
+		sut.indexOfLatestStart(endEvent.getSource().getId());
+		sut.save(endLineMessageEntity);
 		sut.save(startLineMessageEntityUser2);
 		
 		// exercise
-		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 0, 5);
+		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 0, 2);
 		
 		// verify
-		assertThat(actual, hasSize(5));
-		assertThat(actual.get(0).getMessageId(), is("325708"));
+		assertThat(actual, hasSize(2));
+		assertThat(actual.get(0).getMessageId(), is("325709"));
 		assertThat(actual.get(0).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(0).getTimestamp(), is(1499378820L));
-		assertThat(actual.get(0).getValue(), is(0));
+		assertThat(actual.get(0).getTimestamp(), is(1499378886L));
+		assertThat(actual.get(0).getValue(), is("end"));
 		assertThat(actual.get(1).getMessageId(), is("325711"));
 		assertThat(actual.get(1).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(1).getTimestamp(), is(1499378880L));
-		assertThat(actual.get(1).getValue(), is(12));
-		assertThat(actual.get(2).getMessageId(), is("325711"));
-		assertThat(actual.get(2).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(2).getTimestamp(), is(1499378881L));
-		assertThat(actual.get(2).getValue(), is(12));
-		assertThat(actual.get(3).getMessageId(), is("325711"));
-		assertThat(actual.get(3).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(3).getTimestamp(), is(1499378882L));
-		assertThat(actual.get(3).getValue(), is(12));
-		assertThat(actual.get(4).getMessageId(), is("325711"));
-		assertThat(actual.get(4).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(4).getTimestamp(), is(1499378883L));
-		assertThat(actual.get(4).getValue(), is(12));
+		assertThat(actual.get(1).getTimestamp(), is(1499378881L));
+		assertThat(actual.get(1).getValue(), is("12"));
 	}
 	
 	/**
-	 *  指定のuIdと一致しているリストの内、最終ページを返すことを確認する
+	 *  指定のuserIdと一致しているリストの2ページ目を返すことを確認する
 	 */
 	@Test
-	public void testFindByUserLastPage() {
+	public void testFindByUserNextPage() throws StartIndexException {
 		// setup
 		LineEvent startEventUser1 =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
@@ -162,54 +142,45 @@ public class InMemoryCalculatorRepositoryTest {
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
 		LineEvent numberEvent2 =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
-		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
-		LineEvent numberEvent4 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378883);
-		LineEvent numberEvent5 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378884);
-		LineEvent numberEvent6 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378885);
+		LineEvent endEvent =
+				LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378886);
 		LineEvent startEventUser2 =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb9", 1499378821);
 		
 		LineMessageEntity startLineMessageEntityUser1 = LineMessageEntityFixture.createLineEntity(startEventUser1);
 		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
 		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
-		LineMessageEntity numberLineMessageEntity3 = LineMessageEntityFixture.createLineEntity(numberEvent3);
-		LineMessageEntity numberLineMessageEntity4 = LineMessageEntityFixture.createLineEntity(numberEvent4);
-		LineMessageEntity numberLineMessageEntity5 = LineMessageEntityFixture.createLineEntity(numberEvent5);
-		LineMessageEntity numberLineMessageEntity6 = LineMessageEntityFixture.createLineEntity(numberEvent6);
+		LineMessageEntity endLineMessageEntity = LineMessageEntityFixture.createLineEntity(endEvent);
 		LineMessageEntity startLineMessageEntityUser2 = LineMessageEntityFixture.createLineEntity(startEventUser2);
+		
 		sut.save(startLineMessageEntityUser1);
 		sut.save(numberLineMessageEntity1);
 		sut.save(numberLineMessageEntity2);
-		sut.save(numberLineMessageEntity3);
-		sut.save(numberLineMessageEntity4);
-		sut.save(numberLineMessageEntity5);
-		sut.save(numberLineMessageEntity6);
+		sut.indexOfLatestStart(endLineMessageEntity.getUserId());
+		sut.save(endLineMessageEntity);
 		sut.save(startLineMessageEntityUser2);
 		
 		// exercise
-		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 5, 5);
+		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 2, 2);
 		
 		// verify
 		assertThat(actual, hasSize(2));
 		assertThat(actual.get(0).getMessageId(), is("325711"));
 		assertThat(actual.get(0).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(0).getTimestamp(), is(1499378884L));
-		assertThat(actual.get(0).getValue(), is(12));
-		assertThat(actual.get(1).getMessageId(), is("325711"));
+		assertThat(actual.get(0).getTimestamp(), is(1499378880L));
+		assertThat(actual.get(0).getValue(), is("12"));
+		assertThat(actual.get(1).getMessageId(), is("325708"));
 		assertThat(actual.get(1).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
-		assertThat(actual.get(1).getTimestamp(), is(1499378885L));
-		assertThat(actual.get(1).getValue(), is(12));
+		assertThat(actual.get(1).getTimestamp(), is(1499378820L));
+		assertThat(actual.get(1).getValue(), is("start"));
+		
 	}
 	
 	/**
-	 * 存在しないuIdでリスト検索し、空のリストを返すことを確認する
+	 * 存在しないuserIdで検索し、空のリストを返すことを確認する
 	 */
 	@Test
-	public void testFindByNotExistUser() {
+	public void testFindByNotExistUser() throws StartIndexException {
 		// setup
 		LineEvent startEvent =
 				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
