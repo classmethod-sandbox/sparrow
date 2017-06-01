@@ -27,7 +27,6 @@ import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
 import jp.classmethod.sparrow.model.LineMessageEntity;
 import jp.classmethod.sparrow.model.LineMessageEntityFixture;
-import jp.classmethod.sparrow.model.StartIndexException;
 
 /**
  * Created by kunita.fumiko on 2017/05/08.
@@ -36,75 +35,6 @@ public class InMemoryLineMessageEntityRepositoryTest {
 	
 	InMemoryLineMessageEntityRepository sut = new InMemoryLineMessageEntityRepository();
 	
-	
-	/**
-	 * 計算を開始するindexを返すことを確認します
-	 */
-	@Test
-	public void testIndexOfStart() throws StartIndexException {
-		// setup
-		LineEvent numberEvent1 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		LineEvent numberEvent2 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
-		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
-		
-		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
-		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
-		LineMessageEntity numberLineMessageEntity3 = LineMessageEntityFixture.createLineEntity(numberEvent3);
-		
-		sut.save(numberLineMessageEntity1);
-		sut.save(numberLineMessageEntity2);
-		sut.save(numberLineMessageEntity3);
-		
-		// exercise
-		int actual = sut.indexOfStarting("U206d25c2ea6bd87c17655609a1c37cb8");
-		
-		// verify
-		assertThat(actual, is(2));
-	}
-	
-	/**
-	 * Listにresetを含む場合、最新のreset後に登録したデータのindexを返すことを確認します
-	 */
-	@Test
-	public void testIndexOfStartingContainOfReset() throws StartIndexException {
-		// setup
-		LineEvent numberEvent1 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
-		LineEvent numberEvent2 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
-		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378883);
-		
-		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
-		LineMessageEntity resetLineMessageEntity = LineMessageEntityFixture.createLineEntity(resetEvent);
-		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
-		LineMessageEntity numberLineMessageEntity3 = LineMessageEntityFixture.createLineEntity(numberEvent3);
-		
-		sut.save(numberLineMessageEntity1);
-		sut.save(resetLineMessageEntity);
-		sut.save(numberLineMessageEntity2);
-		sut.save(numberLineMessageEntity3);
-		
-		// exercise
-		int actual = sut.indexOfStarting("U206d25c2ea6bd87c17655609a1c37cb8");
-		
-		// verify
-		assertThat(actual, is(1));
-	}
-	
-	/**
-	 * 保存データがない場合、StartIndexExceptionが発生することを確認します
-	 */
-	@Test(expected = StartIndexException.class)
-	public void testIndexOfStartingNoData() throws StartIndexException {
-		// exercise
-		sut.indexOfStarting("U206d25c2ea6bd87c17655609a1c37cb8");
-	}
 	
 	/**
 	 * saveメソッドの引数と戻り値が一致することを確認します
@@ -209,14 +139,13 @@ public class InMemoryLineMessageEntityRepositoryTest {
 		assertThat(actual.get(1).getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
 		assertThat(actual.get(1).getTimestamp(), is(1499378880L));
 		assertThat(actual.get(1).getValue(), is("12"));
-		
 	}
 	
 	/**
 	 * 存在しないuserIdで検索し、空のリストを返すことを確認する
 	 */
 	@Test
-	public void testFindByNotExistUser() throws StartIndexException {
+	public void testFindByNotExistUser() {
 		
 		// exercise
 		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 0, 5);

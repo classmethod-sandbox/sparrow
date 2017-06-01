@@ -15,8 +15,6 @@
  */
 package jp.classmethod.sparrow.infrastructure;
 
-import static org.apache.commons.lang3.math.NumberUtils.isNumber;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Repository;
 
 import jp.classmethod.sparrow.model.LineMessageEntity;
 import jp.classmethod.sparrow.model.LineMessageEntityRepository;
-import jp.classmethod.sparrow.model.StartIndexException;
 
 /**
  * Created by kunita.fumiko on 2017/04/13.
@@ -36,21 +33,6 @@ public class InMemoryLineMessageEntityRepository implements LineMessageEntityRep
 	
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
-	
-	public int indexOfStarting(String userId) throws StartIndexException {
-		if (map.containsKey(userId)) {
-			// Listから"reset"を検索する
-			for (LineMessageEntity collections : map.get(userId)) {
-				String cllectionValue = collections.getValue();
-				if (isNumber(cllectionValue) == false && cllectionValue.equals("reset")) {
-					return map.get(userId).indexOf(collections) - 1;
-				}
-			}
-			// resetが見つからなかった時
-			return map.get(userId).size() - 1;
-		}
-		throw new StartIndexException();
-	}
 	
 	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
 		String userId = lineMessageEntity.getUserId();
@@ -67,7 +49,18 @@ public class InMemoryLineMessageEntityRepository implements LineMessageEntityRep
 	
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
+			int listSize = map.get(userId).size();
+			// offsetがlistSizeより大きい場合は空リストを返す
+			if (listSize < offset) {
+				return Collections.emptyList();
+			}
+			
+			int toIndex;
+			if (listSize > offset + limit) {
+				toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
+			} else {
+				toIndex = map.get(userId).size();
+			}
 			return map.get(userId).subList(offset, toIndex);
 		} else {
 			return Collections.emptyList();

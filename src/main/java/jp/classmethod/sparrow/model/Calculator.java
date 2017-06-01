@@ -72,33 +72,28 @@ public class Calculator {
 	 */
 	public Integer calculateTotal(LineEvent event) {
 		int total = 0;	// 合計値
-		int indexOfReset;
+		int offset = 0;	// 表示開始位置
+		int limit = 5;	// 表示行数
 		String userId = event.getSource().getId();
-		// 計算を開始するindex取得
-		try {
-			indexOfReset = lineMessageEntityRepository.indexOfStarting(userId);
-		} catch (StartIndexException e) {
-			// データがない場合は0を返す
-			return 0;
-		}
-		if (indexOfReset > 0) {
-			int offset = 0;	// 表示開始位置
-			int limit = 5;	// 表示行数
-			while (indexOfReset >= offset) {
-				
-				// データが取得行数(limit)以下の場合、取得行数を調整
-				if ((indexOfReset - offset) < limit) {
-					limit = (indexOfReset - offset) + 1;
-				}
-				List<LineMessageEntity> list = lineMessageEntityRepository.findByUser(userId, offset, limit);
-				for (LineMessageEntity lineMessageValue : list) {
-					if (isNumber(lineMessageValue.getValue())) {
-						total += Integer.valueOf(lineMessageValue.getValue());
-					}
-				}
-				offset = offset + limit;
-				limit = (indexOfReset - offset) + 1;
+		
+		while (true) {
+			List<LineMessageEntity> list = lineMessageEntityRepository.findByUser(userId, offset, limit);
+			
+			// 空リストの場合はbreak
+			if (list.isEmpty()) {
+				break;
 			}
+			
+			// resetまで足していく
+			for (LineMessageEntity lineMessageValue : list) {
+				if (lineMessageValue.getValue().equals("reset")) {
+					break;
+				} else {
+					total += Integer.valueOf(lineMessageValue.getValue());
+				}
+			}
+			
+			offset = offset + limit;
 		}
 		return total;
 	}

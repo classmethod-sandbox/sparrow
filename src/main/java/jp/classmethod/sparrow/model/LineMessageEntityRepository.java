@@ -28,15 +28,6 @@ import java.util.List;
 public interface LineMessageEntityRepository {
 	
 	/**
-	 * userIdが一致するデータにアクセスし、indexを返します。
-	 *
-	 * @param userId
-	 * @return 計算を開始するindexを返します
-	 * @throws StartIndexException データが存在しない場合はStartIndexExceptionを投げます
-	 */
-	int indexOfStarting(String userId) throws StartIndexException;
-	
-	/**
 	 * LineMessageEntityを保存します。
 	 *
 	 * @param lineMessageEntity
