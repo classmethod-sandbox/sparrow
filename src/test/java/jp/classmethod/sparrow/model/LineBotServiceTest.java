@@ -69,7 +69,7 @@ public class LineBotServiceTest {
 	
 	@Spy
 	LineMessageAPIRequest request =
-			LineEventFixture.createLineMessageAPIRequest(LineMessageFixture.createStartLineMessage());
+			LineEventFixture.createLineMessageAPIRequest(LineMessageFixture.createNumberLineMessage());
 	
 	@InjectMocks
 	LineBotService sut;
@@ -88,7 +88,7 @@ public class LineBotServiceTest {
 	@Test
 	public void testMessageIsProcessed() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+		LineEvent event = LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
 		CloseableHttpResponse response = mock(CloseableHttpResponse.class);
 		HttpEntity entity = mock(HttpEntity.class);
 		when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, ""));
@@ -106,7 +106,7 @@ public class LineBotServiceTest {
 	@Test(expected = LineBotAPIException.class)
 	public void testAPIReturnCodeIsNot200() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
+		LineEvent event = LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 2017052600);
 		CloseableHttpResponse response = mock(CloseableHttpResponse.class);
 		HttpEntity entity = mock(HttpEntity.class);
 		when(response.getStatusLine())
@@ -122,7 +122,7 @@ public class LineBotServiceTest {
 	@Test(expected = LineBotAPIException.class)
 	public void testLineBotAPIFailed() throws Exception {
 		// setup
-		LineEvent event = LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
+		LineEvent event = LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		when(httpClient.execute(any())).thenThrow(new IOException());
 		
 		// exercise

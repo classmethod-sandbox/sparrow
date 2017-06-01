@@ -25,15 +25,16 @@ import java.util.List;
  * @author mochizukimasao
  * @since version
  */
-public interface CalculatorRepository {
+public interface LineMessageEntityRepository {
 	
 	/**
 	 * userIdが一致するデータにアクセスし、indexを返します。
+	 *
 	 * @param userId
-	 * @return 最新の"start"のindexを返します
-	 * @throws StartIndexException startしていない場合はStartIndexExceptionを投げます
+	 * @return 計算を開始するindexを返します
+	 * @throws StartIndexException データが存在しない場合はStartIndexExceptionを投げます
 	 */
-	int indexOfLatestStart(String userId) throws StartIndexException;
+	int indexOfStarting(String userId) throws StartIndexException;
 	
 	/**
 	 * LineMessageEntityを保存します。
@@ -44,7 +45,7 @@ public interface CalculatorRepository {
 	LineMessageEntity save(LineMessageEntity lineMessageEntity);
 	
 	/**
-	 * 引数で受け取るuserIdと一致するoffsetの位置(0始まり)からlimitに指定した数以下の要素を降順で返します
+	 * 引数で受け取るuserIdと一致するoffsetの位置(0始まり)からlimitに指定した数以下の要素を返します
 	 *
 	 * @param userId ユーザーID
 	 * @param offset 読み飛ばす行数

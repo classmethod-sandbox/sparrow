@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class Calculator {
 	
-	private final CalculatorRepository calculatorRepository;
+	private final LineMessageEntityRepository lineMessageEntityRepository;
 	
 	
 	/**
@@ -43,41 +43,20 @@ public class Calculator {
 		String messageText = event.getMessage().getText();
 		
 		switch (messageText) {
-			/* メッセージが"start"の場合:データを登録し、"calc mode start"を返します。 */
-			case "start":
-				calculatorRepository.save(createLineMessageEntity(event));
-				return "calc mode start";
+			// メッセージが"total"の場合：最新のresetまでの計算結果を返します。
+			case "total":
+				return String.valueOf(calculateTotal(event));
 			
-			/* メッセージが"end"の場合：計算開始状態かを確認し、以下の結果を返します。
-			 * 計算を開始している場合：登録データにアクセスし、計算結果を返します。
-			 * 計算を開始していない場合：""を返します。*/
-			case "end":
-				if (isStarted(event)) {
-					calculatorRepository.save(createLineMessageEntity(event));
-					return String.valueOf(calculateTotal(event));
-				} else {
-					return "";
-				}
-				
-				/* メッセージが"reset"の場合：計算開始状態かを確認し、以下の結果を返します。
-				 * 計算を開始している場合：登録データをリセットし、"reset"を返します。
-				 * 計算を開始していない場合：""を返します。 */
+			// メッセージが"reset"の場合：データベースにLineEntityを保存し、"reset"を返します
 			case "reset":
-				if (isStarted(event)) {
-					calculatorRepository.save(createLineMessageEntity(event));
-					return "reset";
-				} else {
-					return "";
-				}
-				
-				/* メッセージが数字または仕様で定義されていない無効な値の場合：数値かどうかを確認し、以下の結果を返します。
-				 * 数値の場合：""を返します。
-				 * 数値以外の場合："error"を返します */
+				lineMessageEntityRepository.save(createLineMessageEntity(event));
+				return "reset";
+			
+			// メッセージが数字の場合：データベースにLineEntityを保存し、""を返します
+			// 仕様で定義されていない無効な値の場合："error"を返します。
 			default:
 				if (isNumber(messageText)) {
-					if (isStarted(event)) {
-						calculatorRepository.save(createLineMessageEntity(event));
-					}
+					lineMessageEntityRepository.save(createLineMessageEntity(event));
 					return "";
 				} else {
 					return "error";
@@ -86,54 +65,39 @@ public class Calculator {
 	}
 	
 	/**
-	 *  引数で受けLineEventのuserが計算開始状態かを確認します
-	 *
-	 *  @param event LineEvent情報
-	 *  @return 計算開始状態の場合はtrue、未開始の場合はfalseを返します
-	 */
-	public boolean isStarted(LineEvent event) {
-		String userId = event.getSource().getId();
-		try {
-			calculatorRepository.indexOfLatestStart(userId);
-		} catch (StartIndexException e) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * 取る引数で受け取るLineMessageEntityのuserIdと一致するデータを取得し、データの合計値を算出します。
+	 * 引数で受け取るLineEventのuserIdと一致するデータの合計値を算出します。
 	 *
 	 * @param event LineEvent情報
 	 * @return total userIdが一致するデータの合計値
 	 */
 	public Integer calculateTotal(LineEvent event) {
 		int total = 0;	// 合計値
-		int startLine;
+		int indexOfReset;
 		String userId = event.getSource().getId();
-		// startのindex取得
+		// 計算を開始するindex取得
 		try {
-			startLine = calculatorRepository.indexOfLatestStart(userId);
+			indexOfReset = lineMessageEntityRepository.indexOfStarting(userId);
 		} catch (StartIndexException e) {
-			return null;
+			// データがない場合は0を返す
+			return 0;
 		}
-		if (startLine > 0) {
+		if (indexOfReset > 0) {
 			int offset = 0;	// 表示開始位置
 			int limit = 5;	// 表示行数
-			while (startLine >= offset) {
+			while (indexOfReset >= offset) {
 				
 				// データが取得行数(limit)以下の場合、取得行数を調整
-				if ((startLine - offset) < limit) {
-					limit = (startLine - offset) + 1;
+				if ((indexOfReset - offset) < limit) {
+					limit = (indexOfReset - offset) + 1;
 				}
-				List<LineMessageEntity> list = calculatorRepository.findByUser(userId, offset, limit);
+				List<LineMessageEntity> list = lineMessageEntityRepository.findByUser(userId, offset, limit);
 				for (LineMessageEntity lineMessageValue : list) {
 					if (isNumber(lineMessageValue.getValue())) {
 						total += Integer.valueOf(lineMessageValue.getValue());
 					}
 				}
 				offset = offset + limit;
-				limit = (startLine - offset) + 1;
+				limit = (indexOfReset - offset) + 1;
 			}
 		}
 		return total;

@@ -25,7 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import jp.classmethod.sparrow.infrastructure.InMemoryCalculatorRepository;
+import jp.classmethod.sparrow.infrastructure.InMemoryLineMessageEntityRepository;
 
 /**
  * Created by kunita.fumiko on 2017/05/10.
@@ -34,69 +34,60 @@ import jp.classmethod.sparrow.infrastructure.InMemoryCalculatorRepository;
 public class CalclatorTest {
 	
 	@Spy
-	InMemoryCalculatorRepository inMemoryCalculatorRepository;
+	InMemoryLineMessageEntityRepository inMemoryLineMessageEntityRepository;
 	
 	@InjectMocks
 	Calculator sut;
 	
 	
 	/**
-	 * start発言時の戻り値を確認します
+	 * データが保存されている状態でtotal発言時の戻り値を確認します
 	 */
 	@Test
-	public void testStartSave() {
+	public void testTotal() {
 		// setup
-		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
-		// exesice
-		String actual = sut.save(startEvent);
-		// verify
-		assertThat(actual, is("calc mode start"));
-	}
-	
-	/**
-	 * 計算開始状態でend発言をした時の戻り値を確認します
-	 */
-	@Test
-	public void testEndSave() throws StartIndexException {
-		// setup
-		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
-		LineEvent numberEvent =
+		LineEvent numberEvent1 =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
-		sut.save(startEvent);
-		sut.save(numberEvent);
+		LineEvent resetEvent =
+				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378881);
+		LineEvent numberEvent2 =
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378882);
+		LineEvent numberEvent3 =
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378883);
+		LineEvent totalEvent =
+				LineEventFixture.createTotalLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
+		sut.save(numberEvent1);
+		sut.save(resetEvent);
+		sut.save(numberEvent2);
+		sut.save(numberEvent3);
 		// exesice
-		String actual = sut.save(endEvent);
+		int actual = sut.calculateTotal(totalEvent);
 		// verify
-		assertThat(actual, is("12"));
+		assertThat(actual, is(24));
 	}
 	
 	/**
-	 * 計算未開始状態でend発言をした時の戻り値を確認します
+	 * データが保存されていない状態でtotal発言時の戻り値を確認します
 	 */
 	@Test
-	public void testNotStartedEndSave() {
+	public void testNoDataTotal() {
 		// setup
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
+		LineEvent totalEvent =
+				LineEventFixture.createTotalLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		// exesice
-		String actual = sut.save(endEvent);
+		int actual = sut.calculateTotal(totalEvent);
 		// verify
-		assertThat(actual, is(""));
+		assertThat(actual, is(0));
 	}
 	
 	/**
-	 * 計算開始状態でreset発言時の戻り値を確認します
+	 * reset発言時の戻り値を確認します
 	 */
 	@Test
 	public void testResetSave() {
 		// setup
-		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent resetEvent =
 				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
-		sut.save(startEvent);
 		// exesice
 		String actual = sut.save(resetEvent);
 		// verify
@@ -104,41 +95,10 @@ public class CalclatorTest {
 	}
 	
 	/**
-	 * 計算未開始状態でreset発言時の戻り値を確認します
-	 */
-	@Test
-	public void testNotStartedResetSave() {
-		// setup
-		LineEvent resetEvent =
-				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
-		// exesice
-		String actual = sut.save(resetEvent);
-		// verify
-		assertThat(actual, is(""));
-	}
-	
-	/**
-	 * 計算開始状態で数字発言時の戻り値を確認します
+	 * 数字発言時の戻り値を確認します
 	 */
 	@Test
 	public void testNumberSave() {
-		// setup
-		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
-		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		sut.save(startEvent);
-		// exesice
-		String actual = sut.save(numberEvent);
-		// verify
-		assertThat(actual, is(""));
-	}
-	
-	/**
-	 * 計算未開始状態で数字発言時の戻り値を確認します
-	 */
-	@Test
-	public void testNotStartedNumberSave() {
 		// setup
 		LineEvent numberEvent =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
@@ -163,111 +123,69 @@ public class CalclatorTest {
 	}
 	
 	/**
-	 * startを発言している時、isStartedがtrueを返すことを確認します
-	 */
-	@Test
-	public void testIsStarted() {
-		// setup
-		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
-		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378821);
-		LineMessageEntity startLineMessageEntity = LineMessageEntityFixture.createLineEntity(startEvent);
-		when(inMemoryCalculatorRepository.save(startLineMessageEntity)).thenCallRealMethod();
-		
-		// exesice
-		boolean actual = sut.isStarted(numberEvent);
-		
-		//verify
-		assertThat(actual, is(true));
-	}
-	
-	/**
-	 * startを発言していない時、isStartedがfalseを返すことを確認します
-	 */
-	@Test
-	public void testIsNotStarted() {
-		// setup
-		LineEvent numberEvent =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378821);
-		
-		// exesice
-		boolean actual = sut.isStarted(numberEvent);
-		
-		//verify
-		assertThat(actual, is(false));
-	}
-	
-	/**
 	 * 引数で渡すLineMessegaEntityのuIdと一致するリストの合計値を返すことを確認します
 	 */
 	@Test
 	public void testCalculateTotal() {
 		// setup
-		LineEvent startEvent1 =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		LineEvent numberEvent1 =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378821);
 		LineEvent resetEvent =
 				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378822);
-		LineEvent startEvent2 =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378823);
 		LineEvent numberEvent2 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378824);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378823);
 		LineEvent numberEvent3 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378825);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378824);
 		LineEvent numberEvent4 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378826);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378825);
 		LineEvent numberEvent5 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378827);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378826);
 		LineEvent numberEvent6 =
-				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378828);
-		LineEvent endEvent = LineEventFixture.createEndLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378829);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378827);
+		LineEvent numberEvent =
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c38cb9", 1499378828);
+		LineEvent totalEvent =
+				LineEventFixture.createTotalLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378829);
 		
-		LineMessageEntity startLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(startEvent1);
 		LineMessageEntity numberLineMessageEntity1 = LineMessageEntityFixture.createLineEntity(numberEvent1);
-		LineMessageEntity startLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(startEvent2);
 		LineMessageEntity resetLineMessageEntity = LineMessageEntityFixture.createLineEntity(resetEvent);
 		LineMessageEntity numberLineMessageEntity2 = LineMessageEntityFixture.createLineEntity(numberEvent2);
 		LineMessageEntity numberLineMessageEntity3 = LineMessageEntityFixture.createLineEntity(numberEvent3);
 		LineMessageEntity numberLineMessageEntity4 = LineMessageEntityFixture.createLineEntity(numberEvent4);
 		LineMessageEntity numberLineMessageEntity5 = LineMessageEntityFixture.createLineEntity(numberEvent5);
 		LineMessageEntity numberLineMessageEntity6 = LineMessageEntityFixture.createLineEntity(numberEvent6);
-		LineMessageEntity endLineMessageEntity = LineMessageEntityFixture.createLineEntity(endEvent);
+		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
 		
-		when(inMemoryCalculatorRepository.save(startLineMessageEntity1)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity1)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(startLineMessageEntity2)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(resetLineMessageEntity)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity2)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity3)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity4)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity5)).thenCallRealMethod();
-		when(inMemoryCalculatorRepository.save(numberLineMessageEntity6)).thenCallRealMethod();
-		sut.isStarted(endEvent);
-		when(inMemoryCalculatorRepository.save(endLineMessageEntity)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity1)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(resetLineMessageEntity)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity2)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity3)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity4)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity5)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity6)).thenCallRealMethod();
+		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity)).thenCallRealMethod();
 		
 		// exesice
-		int result = sut.calculateTotal(endEvent);
+		int result = sut.calculateTotal(totalEvent);
 		
 		// verify
 		assertThat(result, is(60));
 	}
 	
 	/**
-	 * start発言時のLineEntity生成を確認します
+	 *  数字発言時のLineEntity生成を確認します
 	 */
 	@Test
 	public void testcreateLineMessageEntity() {
 		// setup
 		LineEvent startEvent =
-				LineEventFixture.createStartLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
+				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
 		// exesice
 		LineMessageEntity startLineMessageEntity = sut.createLineMessageEntity(startEvent);
 		// velify
-		assertThat(startLineMessageEntity.getMessageId(), is("325708"));
+		assertThat(startLineMessageEntity.getMessageId(), is("325711"));
 		assertThat(startLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
 		assertThat(startLineMessageEntity.getTimestamp(), is(1499378820L));
-		assertThat(startLineMessageEntity.getValue(), is("start"));
+		assertThat(startLineMessageEntity.getValue(), is("12"));
 	}
 }
