@@ -37,19 +37,14 @@ public class InMemoryLineMessageEntityRepository implements LineMessageEntityRep
 	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
 		String userId = lineMessageEntity.getUserId();
 		// LinedListを生成し、常にindex0にLineEntityを保存します
-		if (map.containsKey(userId)) {
-			map.get(userId).add(0, lineMessageEntity);
-		} else {
-			List<LineMessageEntity> list = new LinkedList<>();
-			list.add(0, lineMessageEntity);
-			map.put(userId, list);
-		}
+		map.computeIfAbsent(userId, k -> new LinkedList<>()).add(0, lineMessageEntity);
 		return lineMessageEntity;
 	}
 	
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int listSize = map.get(userId).size();
+			List<LineMessageEntity> list = map.get(userId);
+			int listSize = list.size();
 			// offsetがlistSizeより大きい場合は空リストを返す
 			if (listSize < offset) {
 				return Collections.emptyList();
@@ -59,9 +54,9 @@ public class InMemoryLineMessageEntityRepository implements LineMessageEntityRep
 			if (listSize > offset + limit) {
 				toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
 			} else {
-				toIndex = map.get(userId).size();
+				toIndex = listSize;
 			}
-			return map.get(userId).subList(offset, toIndex);
+			return list.subList(offset, toIndex);
 		} else {
 			return Collections.emptyList();
 		}

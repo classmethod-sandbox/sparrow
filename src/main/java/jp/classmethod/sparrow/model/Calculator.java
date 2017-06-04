@@ -70,7 +70,7 @@ public class Calculator {
 	 * @param event LineEvent情報
 	 * @return total userIdが一致するデータの合計値
 	 */
-	public Integer calculateTotal(LineEvent event) {
+	public int calculateTotal(LineEvent event) {
 		int total = 0;	// 合計値
 		int offset = 0;	// 表示開始位置
 		int limit = 5;	// 表示行数
