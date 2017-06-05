@@ -25,17 +25,7 @@ public class LineMessageEntityFixture {
 		startLineEntity.setMessageId(event.getMessage().getId());
 		startLineEntity.setUserId(event.getSource().getId());
 		startLineEntity.setTimestamp(event.getTimestamp());
-		
-		switch (event.getMessage().getText()) {
-			case "start":
-			case "reset":
-			case "end":
-				startLineEntity.setValue(0);
-				break;
-			default:
-				startLineEntity.setValue(Integer.valueOf(event.getMessage().getText()));
-				break;
-		}
+		startLineEntity.setValue(event.getMessage().getText());
 		return startLineEntity;
 	}
 }

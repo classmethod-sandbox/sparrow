@@ -15,63 +15,48 @@
  */
 package jp.classmethod.sparrow.infrastructure;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
-import jp.classmethod.sparrow.model.CalculatorRepository;
 import jp.classmethod.sparrow.model.LineMessageEntity;
+import jp.classmethod.sparrow.model.LineMessageEntityRepository;
 
 /**
  * Created by kunita.fumiko on 2017/04/13.
  */
 @Repository
-public class InMemoryCalculatorRepository implements CalculatorRepository {
+public class InMemoryLineMessageEntityRepository implements LineMessageEntityRepository {
 	
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
 	
-	public boolean isStarted(String userId) {
-		return map.containsKey(userId);
-	}
-	
-	/**
-	 * mapにuIdが存在する場合は、リストにlineEntityを追加する
-	 * mapにuIdが存在しない場合は、リストを新規作成してmapに追加する
-	 * @param lineMessageEntity 保存したい対象
-	 * @return 保存したリスト
-	 */
 	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
-		String uId = lineMessageEntity.getUserId();
-		if (map.containsKey(uId)) {
-			map.get(uId).add(lineMessageEntity);
-		} else {
-			List<LineMessageEntity> list = new ArrayList<>();
-			list.add(lineMessageEntity);
-			map.put(uId, list);
-		}
+		String userId = lineMessageEntity.getUserId();
+		// LinedListを生成し、常にindex0にLineEntityを保存します
+		map.computeIfAbsent(userId, k -> new LinkedList<>()).add(0, lineMessageEntity);
 		return lineMessageEntity;
 	}
 	
-	/**
-	 * リクエストのユーザーIDと一致するデータを抽出する
-	 * @param userId ユーザーID
-	 * @param offset 取得にあたって読み飛ばす
-	 * @param limit　取得にあたって制限する個数
-	 * @return ユーザーIDが一致するリスト（該当するIDが存在しない場合は空のリストを返す）
-	 */
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		if (map.containsKey(userId)) {
-			int listsize = map.get(userId).size();
-			
-			if (listsize > limit + offset) {
-				return map.get(userId).subList(offset, limit);
-			} else {
-				return map.get(userId).subList(offset, listsize);
+			List<LineMessageEntity> list = map.get(userId);
+			int listSize = list.size();
+			// offsetがlistSizeより大きい場合は空リストを返す
+			if (listSize < offset) {
+				return Collections.emptyList();
 			}
+			
+			int toIndex;
+			if (listSize > offset + limit) {
+				toIndex = offset + limit; // subListは行数ではなくindexを渡す必要があるので調整
+			} else {
+				toIndex = listSize;
+			}
+			return list.subList(offset, toIndex);
 		} else {
 			return Collections.emptyList();
 		}

@@ -25,25 +25,13 @@ import java.util.Collections;
  */
 public class LineEventFixture {
 	
-	// startLineEventを生成
-	public static LineEvent createStartLineUserEvent(String userId, Integer timeStamp) {
+	// numberLineEventを生成
+	public static LineEvent createNumberLineUserEvent(String userId, Integer timeStamp) {
 		return new LineEvent(
 				"message",
 				timeStamp,
 				createLineUserEventSource(userId),
-				LineMessageFixture.createStartLineMessage(),
-				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				null,
-				null);
-	}
-	
-	// endLineEventを生成
-	public static LineEvent createEndLineUserEvent(String userId, Integer timeStamp) {
-		return new LineEvent(
-				"message",
-				timeStamp,
-				createLineUserEventSource(userId),
-				LineMessageFixture.createEndLineMessage(),
+				LineMessageFixture.createNumberLineMessage(),
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
@@ -61,25 +49,13 @@ public class LineEventFixture {
 				null);
 	}
 	
-	// numberLineEventを生成
-	public static LineEvent createNumberLineUserEvent(String userId, Integer timeStamp) {
+	// totalLineEventを生成
+	public static LineEvent createTotalLineUserEvent(String userId, Integer timeStamp) {
 		return new LineEvent(
 				"message",
 				timeStamp,
 				createLineUserEventSource(userId),
-				LineMessageFixture.createNumberLineMessage(),
-				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				null,
-				null);
-	}
-	
-	// NegativeNumberLineEventを生成
-	public static LineEvent createNegativeNumberLineUserEvent(String userId, Integer timeStamp) {
-		return new LineEvent(
-				"message",
-				timeStamp,
-				createLineUserEventSource(userId),
-				LineMessageFixture.createNegativeNumberLineMessage(),
+				LineMessageFixture.createTotalLineMessage(),
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
@@ -115,6 +91,6 @@ public class LineEventFixture {
 	
 	public static LineMessageAPIRequest createLineMessageAPIRequest(LineMessage lineMessage) {
 		return new LineMessageAPIRequest("nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				Collections.singletonList(LineMessageFixture.createStartLineMessage()));
+				Collections.singletonList(LineMessageFixture.createNumberLineMessage()));
 	}
 }

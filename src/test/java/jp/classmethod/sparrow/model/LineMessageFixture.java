@@ -20,13 +20,8 @@ package jp.classmethod.sparrow.model;
  */
 public class LineMessageFixture {
 	
-	public static LineMessage createStartLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325708", "start", null, null,
-				0.0, 0.0, null, null);
-	}
-	
-	public static LineMessage createEndLineMessage() {
-		return new LineMessage(LineMessageType.TEXT, "325709", "end", null, null,
+	public static LineMessage createTotalLineMessage() {
+		return new LineMessage(LineMessageType.TEXT, "325709", "total", null, null,
 				0.0, 0.0, null, null);
 	}
 	

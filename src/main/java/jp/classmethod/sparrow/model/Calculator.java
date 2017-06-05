@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class Calculator {
 	
-	private final CalculatorRepository calculatorRepository;
+	private final LineMessageEntityRepository lineMessageEntityRepository;
 	
 	
 	/**
@@ -40,125 +40,76 @@ public class Calculator {
 	 * @return result Linebotがユーザーに返信するメッセージ(text)
 	 */
 	public String save(LineEvent event) {
-		String messageText;
-		messageText = event.getMessage().getText();
-		String userId = event.getSource().getId();
-		String result = null;
+		String messageText = event.getMessage().getText();
 		
 		switch (messageText) {
-			/* メッセージが"start"の場合:
-			 * データを登録し、"calc mode start"を返します。
-			 */
-			case "start":
-				calculatorRepository.save(createLineMessageEntity(event, messageText));
-				result = "calc mode start";
-				break;
+			// メッセージが"total"の場合：最新のresetまでの計算結果を返します。
+			case "total":
+				return String.valueOf(calculateTotal(event));
 			
-			/* メッセージが"end"の場合:
-			 * 計算がstartしているかを確認します。
-			 * startしている場合：計算を行い、計算結果を返します。計算後は登録データをリセットします。
-			 * startしていない場合：""を返します。*/
-			case "end":
-				if (calculatorRepository.isStarted(userId)) {
-					result = String.valueOf(calculateTotal(createLineMessageEntity(event, messageText)));
-					resetList(createLineMessageEntity(event, messageText));
-				} else {
-					result = "";
-				}
-				break;
-			
-			/* メッセージが"reset"の場合：
-			 * 計算がstartしているかを確認します。
-			 * startしている場合：登録データをリセットし、"reset"を返します。
-			 * startしていない場合：""を返します。 */
+			// メッセージが"reset"の場合：データベースにLineEntityを保存し、"reset"を返します
 			case "reset":
-				if (calculatorRepository.isStarted(userId)) {
-					resetList(createLineMessageEntity(event, messageText));
-					result = "reset";
-				} else {
-					result = "";
-				}
-				break;
+				lineMessageEntityRepository.save(createLineMessageEntity(event));
+				return "reset";
 			
-			/* メッセージが数字または仕様で定義されていない無効な値の場合：
-			 * 数値かどうかを確認します。
-			 * 数値の場合：計算がstartしているかを確認し、""を返します。
-			 * 　startしている場合：データを登録します。
-			 * 　startしていない場合：何も行いません。
-			 * 数値以外の場合："error"を返します */
+			// メッセージが数字の場合：データベースにLineEntityを保存し、""を返します
+			// 仕様で定義されていない無効な値の場合："error"を返します。
 			default:
 				if (isNumber(messageText)) {
-					if (calculatorRepository.isStarted(userId)) {
-						calculatorRepository.save(createLineMessageEntity(event, messageText));
-					}
-					result = "";
+					lineMessageEntityRepository.save(createLineMessageEntity(event));
+					return "";
 				} else {
-					result = "error";
+					return "error";
 				}
-				break;
 		}
-		return result;
 	}
 	
 	/**
-	 * 受け取ったLineMessageEntityのuserIdと一致するデータを取得し、データの合計値を算出します。
+	 * 引数で受け取るLineEventのuserIdと一致するデータの合計値を算出します。
 	 *
-	 * @param lineMessageEntity LineMessageEntity情報
+	 * @param event LineEvent情報
 	 * @return total userIdが一致するデータの合計値
 	 */
-	public Integer calculateTotal(LineMessageEntity lineMessageEntity) {
-		String uId = lineMessageEntity.getUserId();
-		int listSize;
+	public int calculateTotal(LineEvent event) {
+		int total = 0;	// 合計値
 		int offset = 0;	// 表示開始位置
 		int limit = 5;	// 表示行数
-		int total = 0;	// 合計値
-		do {
-			List<LineMessageEntity> list = calculatorRepository.findByUser(uId, offset, limit);
-			for (LineMessageEntity lineMessageValue : list) {
-				total += lineMessageValue.getValue();
+		String userId = event.getSource().getId();
+		
+		while (true) {
+			List<LineMessageEntity> list = lineMessageEntityRepository.findByUser(userId, offset, limit);
+			
+			// 空リストの場合はbreak
+			if (list.isEmpty()) {
+				break;
 			}
+			
+			// resetまで足していく
+			for (LineMessageEntity lineMessageValue : list) {
+				if (lineMessageValue.getValue().equals("reset")) {
+					break;
+				} else {
+					total += Integer.valueOf(lineMessageValue.getValue());
+				}
+			}
+			
 			offset = offset + limit;
-			listSize = list.size();
-		} while (listSize >= offset);
+		}
 		return total;
 	}
 	
 	/**
-	 * 受け取ったLineMessageEntityのuserIdと一致するデータの合計値を0にします。
-	 * @param lineMessageEntity リクエストの情報
-	 * @return 再計算した合計値（常に0を返します）
-	 */
-	public Integer resetList(LineMessageEntity lineMessageEntity) {
-		Integer total = calculateTotal(lineMessageEntity);
-		lineMessageEntity.setValue(-total); //符号を反転
-		calculatorRepository.save(lineMessageEntity);
-		return calculateTotal(lineMessageEntity);
-	}
-	
-	/**
-	 * 受け取ったLineEventからLineMessageEntityを生成します
-	 * メッセージテキストの内容により異なるLineMessageEntityのValueをセットします。
+	 * 引数で受け取るLineEventからLineMessageEntityを生成します
+	 *
 	 * @param event LineEvent情報
-	 * @param messageText リクエストのテキストメッセージの値
 	 * @return lineMessageEntity
 	 */
-	public LineMessageEntity createLineMessageEntity(LineEvent event, String messageText) {
+	public LineMessageEntity createLineMessageEntity(LineEvent event) {
 		LineMessageEntity lineMessageEntity = new LineMessageEntity();
 		lineMessageEntity.setMessageId(event.getMessage().getId());
 		lineMessageEntity.setUserId(event.getSource().getId());
 		lineMessageEntity.setTimestamp(event.getTimestamp());
-		
-		switch (messageText) {
-			case "start":
-			case "end":
-			case "reset":
-				lineMessageEntity.setValue(0);
-				break;
-			//　数字の時
-			default:
-				lineMessageEntity.setValue(Integer.valueOf(event.getMessage().getText()));
-				break;
-		}
+		lineMessageEntity.setValue(event.getMessage().getText());
 		return lineMessageEntity;
 	}
 }
