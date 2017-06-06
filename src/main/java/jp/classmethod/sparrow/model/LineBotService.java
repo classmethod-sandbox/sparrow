@@ -63,7 +63,8 @@ public class LineBotService {
 	/**
 	 * Lineの署名検証を行う
 	 * https://devdocs.line.me/ja/#webhooks
-	 * @param expected HTTPヘッダ X-Line-Signature の値
+	 *
+	 * @param expected    HTTPヘッダ X-Line-Signature の値
 	 * @param requestBody Body部の文字列
 	 * @return ヘッダと計算結果が一致していればtrue. 不一致や計算失敗の場合はfalse
 	 */
@@ -79,9 +80,10 @@ public class LineBotService {
 	
 	/**
 	 * 署名検証用のシグネチャを計算する
+	 *
 	 * @param requestBody リクエストの本体
 	 * @return シグネチャの計算結果
-	 * @throws GeneralSecurityException　設定したChannelSecretが異常だった時
+	 * @throws GeneralSecurityException 　設定したChannelSecretが異常だった時
 	 */
 	String calculateRequestSignature(String requestBody) throws GeneralSecurityException {
 		String channelSecret = configurationProperties.getChannelSecret();
@@ -96,6 +98,7 @@ public class LineBotService {
 	
 	/**
 	 * JSON文字列をLineWebhookRequest型に変換する
+	 *
 	 * @param request リクエスト本体のJSON文字列
 	 * @return LineWebhookRequest型のインスタンス
 	 * @throws IOException
@@ -105,7 +108,6 @@ public class LineBotService {
 	}
 	
 	/**
-	 *
 	 * @param event Lineイベント情報
 	 */
 	public void echoBot(LineEvent event, String responseText) {
@@ -155,6 +157,7 @@ public class LineBotService {
 	
 	/**
 	 * リクエストの内容を確認する
+	 *
 	 * @param event Lineイベント情報
 	 * @return イベントがmessageタイプ＆textタイプである場合はtrue,そうでない場合はfalseを返す
 	 */

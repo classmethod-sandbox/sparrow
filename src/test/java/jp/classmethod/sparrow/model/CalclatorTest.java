@@ -60,10 +60,10 @@ public class CalclatorTest {
 		sut.save(resetEvent);
 		sut.save(numberEvent2);
 		sut.save(numberEvent3);
-		// exesice
-		int actual = sut.calculateTotal(totalEvent);
+		// exercise
+		String actual = sut.save(totalEvent);
 		// verify
-		assertThat(actual, is(24));
+		assertThat(actual, is("24"));
 	}
 	
 	/**
@@ -75,9 +75,9 @@ public class CalclatorTest {
 		LineEvent totalEvent =
 				LineEventFixture.createTotalLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
 		// exesice
-		int actual = sut.calculateTotal(totalEvent);
+		String actual = sut.save(totalEvent);
 		// verify
-		assertThat(actual, is(0));
+		assertThat(actual, is("0"));
 	}
 	
 	/**
