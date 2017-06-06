@@ -15,11 +15,16 @@
  */
 package jp.classmethod.sparrow;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,12 +36,29 @@ import org.springframework.stereotype.Component;
  * @since #version#
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class ExampleCommandlineRunner implements CommandLineRunner {
+	
+	private final JdbcTemplate jdbcTemplate;
+	
 	
 	@Override
 	public void run(String... args) {
 		log.info("Hello, world!");
 		Arrays.stream(args).forEach(log::info);
+		
+		jdbcTemplate.update("INSERT INTO foobar (foobar_id, foobar_str, foobar_num) VALUES (?, ?, ?)",
+				"yokota", "satoshi", 456L);
+		
+		jdbcTemplate.query("SELECT * FROM foobar ORDER BY foobar_id", new RowCallbackHandler() {
+			@Override
+			public void processRow(ResultSet rs) throws SQLException {
+				String id = rs.getString("foobar_id");
+				String str = rs.getString("foobar_str");
+				long num = rs.getLong("foobar_num");
+				log.info("ID:{}, str:{}, num:{}", id, str, num);
+			}
+		});
 	}
 }
