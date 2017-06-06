@@ -31,7 +31,7 @@ import jp.classmethod.sparrow.infrastructure.InMemoryLineMessageEntityRepository
  * Created by kunita.fumiko on 2017/05/10.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CalclatorTest {
+public class CalculatorTest {
 	
 	@Spy
 	InMemoryLineMessageEntityRepository inMemoryLineMessageEntityRepository;
@@ -60,10 +60,10 @@ public class CalclatorTest {
 		sut.save(resetEvent);
 		sut.save(numberEvent2);
 		sut.save(numberEvent3);
-		// exesice
-		int actual = sut.calculateTotal(totalEvent);
+		// exercise
+		String actual = sut.save(totalEvent);
 		// verify
-		assertThat(actual, is(24));
+		assertThat(actual, is("24"));
 	}
 	
 	/**
@@ -74,10 +74,10 @@ public class CalclatorTest {
 		// setup
 		LineEvent totalEvent =
 				LineEventFixture.createTotalLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379060);
-		// exesice
-		int actual = sut.calculateTotal(totalEvent);
+		// exercise
+		String actual = sut.save(totalEvent);
 		// verify
-		assertThat(actual, is(0));
+		assertThat(actual, is("0"));
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class CalclatorTest {
 		// setup
 		LineEvent resetEvent =
 				LineEventFixture.createResetLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379000);
-		// exesice
+		// exercise
 		String actual = sut.save(resetEvent);
 		// verify
 		assertThat(actual, is("reset"));
@@ -102,7 +102,7 @@ public class CalclatorTest {
 		// setup
 		LineEvent numberEvent =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378880);
-		// exesice
+		// exercise
 		String actual = sut.save(numberEvent);
 		// verify
 		assertThat(actual, is(""));
@@ -116,14 +116,14 @@ public class CalclatorTest {
 		// setup
 		LineEvent invalidEvent =
 				LineEventFixture.createInvalidLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499379120);
-		// exesice
+		// exercise
 		String actual = sut.save(invalidEvent);
 		// verify
 		assertThat(actual, is("error"));
 	}
 	
 	/**
-	 * 引数で渡すLineMessegaEntityのuIdと一致するリストの合計値を返すことを確認します
+	 * 引数で渡すLineMessageEntityのuIdと一致するリストの合計値を返すことを確認します
 	 */
 	@Test
 	public void testCalculateTotal() {
@@ -165,9 +165,8 @@ public class CalclatorTest {
 		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity6)).thenCallRealMethod();
 		when(inMemoryLineMessageEntityRepository.save(numberLineMessageEntity)).thenCallRealMethod();
 		
-		// exesice
+		// exercise
 		int result = sut.calculateTotal(totalEvent);
-		
 		// verify
 		assertThat(result, is(60));
 	}
@@ -176,13 +175,13 @@ public class CalclatorTest {
 	 *  数字発言時のLineEntity生成を確認します
 	 */
 	@Test
-	public void testcreateLineMessageEntity() {
+	public void testCreateLineMessageEntity() {
 		// setup
 		LineEvent startEvent =
 				LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
-		// exesice
+		// exercise
 		LineMessageEntity startLineMessageEntity = sut.createLineMessageEntity(startEvent);
-		// velify
+		// verify
 		assertThat(startLineMessageEntity.getMessageId(), is("325711"));
 		assertThat(startLineMessageEntity.getUserId(), is("U206d25c2ea6bd87c17655609a1c37cb8"));
 		assertThat(startLineMessageEntity.getTimestamp(), is(1499378820L));

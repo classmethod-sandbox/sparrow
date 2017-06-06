@@ -46,7 +46,7 @@ public class CalcServiceTest {
 	
 	
 	/**
-	 * linebotservice#validateRequestSignatureの結果がfalseの時、例外を投げることを確認する
+	 * LineBotService#validateRequestSignatureの結果がfalseの時、例外を投げることを確認する
 	 */
 	@Test
 	public void budValidateTest() {
@@ -57,10 +57,10 @@ public class CalcServiceTest {
 				+ "\"message\":{\"type\":\"text\",\"id\":\"325708\",\"text\":\"start\",\"latitude\":0.0,\"longitude\":0.0},"
 				+ "\"replyToken\":\"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA\"}]}";
 		when(lineBotService.validateRequestSignature(anyString(), anyString())).thenReturn(false);
-		// exesice
+		// exercise
 		try {
 			sut.process(signature, requestBody);
-			fail(); //例外を投げなかった場合はテスト失敗
+			fail(); // 例外を投げなかった場合はテスト失敗
 		} catch (IllegalArgumentException e) {
 			assertTrue(true);
 		}
