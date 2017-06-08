@@ -89,7 +89,8 @@ public class LineEventTest {
 	@Test
 	public void testJson2Value() throws Exception {
 		//setup
-		LineEvent expect = LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
+		LineEvent expect =
+				LineEventFixture.createLineUserEvent("325711", "U206d25c2ea6bd87c17655609a1c37cb8", 1499378820L, "12");
 		
 		// exercise
 		ObjectContent<LineEvent> actual = json.parse(USER_EVENT_JSON);

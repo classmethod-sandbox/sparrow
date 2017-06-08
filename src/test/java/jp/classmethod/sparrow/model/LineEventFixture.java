@@ -25,49 +25,13 @@ import java.util.Collections;
  */
 public class LineEventFixture {
 	
-	// numberLineEventを生成
-	public static LineEvent createNumberLineUserEvent(String userId, Integer timeStamp) {
+	// LineEventを生成する
+	public static LineEvent createLineUserEvent(String messageId, String userId, Long timeStamp, String value) {
 		return new LineEvent(
 				"message",
 				timeStamp,
 				createLineUserEventSource(userId),
-				LineMessageFixture.createNumberLineMessage(),
-				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				null,
-				null);
-	}
-	
-	// ResetLineEventを生成
-	public static LineEvent createResetLineUserEvent(String userId, Integer timeStamp) {
-		return new LineEvent(
-				"message",
-				timeStamp,
-				createLineUserEventSource(userId),
-				LineMessageFixture.createResetLineMessage(),
-				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				null,
-				null);
-	}
-	
-	// totalLineEventを生成
-	public static LineEvent createTotalLineUserEvent(String userId, Integer timeStamp) {
-		return new LineEvent(
-				"message",
-				timeStamp,
-				createLineUserEventSource(userId),
-				LineMessageFixture.createTotalLineMessage(),
-				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				null,
-				null);
-	}
-	
-	// createInvalidLineEventを生成
-	public static LineEvent createInvalidLineUserEvent(String userId, Integer timeStamp) {
-		return new LineEvent(
-				"message",
-				timeStamp,
-				createLineUserEventSource(userId),
-				LineMessageFixture.createInvalidLineMessage(),
+				createLineMessage(messageId, value),
 				"nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
 				null,
 				null);
@@ -91,6 +55,12 @@ public class LineEventFixture {
 	
 	public static LineMessageAPIRequest createLineMessageAPIRequest(LineMessage lineMessage) {
 		return new LineMessageAPIRequest("nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-				Collections.singletonList(LineMessageFixture.createNumberLineMessage()));
+				Collections.singletonList(lineMessage));
+	}
+	
+	// LineMessageを生成する
+	public static LineMessage createLineMessage(String messageId, String text) {
+		return new LineMessage(LineMessageType.TEXT, messageId, text, null, null,
+				0.0, 0.0, null, null);
 	}
 }
