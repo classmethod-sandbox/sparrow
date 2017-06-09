@@ -29,7 +29,8 @@ import jp.classmethod.sparrow.model.LineEventFixture;
 public class LineWebhookRequestFixture {
 	
 	public static LineWebhookRequest createRequest() {
-		LineEvent e1 = LineEventFixture.createNumberLineUserEvent("U206d25c2ea6bd87c17655609a1c37cb8", 1499378820);
+		LineEvent e1 =
+				LineEventFixture.createLineUserEvent("325711", "U206d25c2ea6bd87c17655609a1c37cb8", 1499378820L, "12");
 		return new LineWebhookRequest(Collections.singletonList(e1));
 	}
 }

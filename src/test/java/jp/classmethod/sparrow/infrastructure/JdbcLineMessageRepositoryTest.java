@@ -15,14 +15,20 @@
  */
 package jp.classmethod.sparrow.infrastructure;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
+import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import jp.classmethod.sparrow.model.LineEvent;
 import jp.classmethod.sparrow.model.LineEventFixture;
@@ -30,11 +36,16 @@ import jp.classmethod.sparrow.model.LineMessageEntity;
 import jp.classmethod.sparrow.model.LineMessageEntityFixture;
 
 /**
- * Created by kunita.fumiko on 2017/05/08.
+ * Created by kunita.fumiko on 2017/06/06.
  */
-public class InMemoryLineMessageEntityRepositoryTest {
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles("aws")
+public class JdbcLineMessageRepositoryTest {
 	
-	InMemoryLineMessageEntityRepository sut = new InMemoryLineMessageEntityRepository();
+	@Autowired
+	JdbcLineMessageRepository sut;
 	
 	
 	/**
@@ -50,20 +61,17 @@ public class InMemoryLineMessageEntityRepositoryTest {
 		LineEvent numberEvent =
 				LineEventFixture.createLineUserEvent(messageId, user, timeStamp, number);
 		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
-		
 		// exercise
 		LineMessageEntity actual = sut.save(numberLineMessageEntity);
-		
 		// verify
 		assertThat(actual, is(numberLineMessageEntity));
 	}
 	
 	/**
-	 *  指定のuserIdと一致するリストを返すことを確認する
+	 * 指定のuserIdと一致するリストを返すことを確認する
 	 */
 	@Test
 	public void testFindByUser() {
-		// setup
 		// setup
 		String user1 = "U206d25c2ea6bd87c17655609a1c37cb8";
 		String user2 = "U206d25c2ea6bd87c17655609a1c37cb9";
@@ -95,7 +103,7 @@ public class InMemoryLineMessageEntityRepositoryTest {
 	}
 	
 	/**
-	 *  指定のuserIdと一致するリストの2ページ目を返すことを確認する
+	 * 指定のuserIdと一致するリストの2ページ目を返すことを確認する
 	 */
 	@Test
 	public void testFindByUserNextPage() {
@@ -114,7 +122,7 @@ public class InMemoryLineMessageEntityRepositoryTest {
 			.forEach(sut::save);
 		
 		// exercise
-		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c37cb8", 2, 2);
+		List<LineMessageEntity> actual = sut.findByUser(user1, 2, 2);
 		
 		// verify
 		assertThat(actual, hasSize(2));
@@ -135,7 +143,7 @@ public class InMemoryLineMessageEntityRepositoryTest {
 	public void testFindByNotExistUser() {
 		
 		// exercise
-		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 0, 5);
+		List<LineMessageEntity> actual = sut.findByUser("U206d25c2ea6bd87c17655609a1c40cb2", 0, 10);
 		
 		// verify
 		assertThat(actual, hasSize(0));
