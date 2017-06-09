@@ -39,10 +39,15 @@ public class JdbcLineMessageRepository implements LineMessageEntityRepository {
 	
 	private final JdbcTemplate jdbcTemplate;
 	
+	private static final String INSERT_SQL =
+			"INSERT INTO line_message_entity (user_id, message_id, timestamp, value) VALUES (?, ?, ?, ?)";
+	
+	private static final String SELECT_SQL =
+			"SELECT * FROM line_message_entity WHERE user_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+	
 	
 	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
-		String sql = "INSERT INTO line_message_entity (user_id, message_id, timestamp, value) VALUES (?, ?, ?, ?)";
-		jdbcTemplate.update(sql, new Object[] {
+		jdbcTemplate.update(INSERT_SQL, new Object[] {
 			lineMessageEntity.getUserId(),
 			lineMessageEntity.getMessageId(),
 			lineMessageEntity.getTimestamp(),
@@ -53,9 +58,7 @@ public class JdbcLineMessageRepository implements LineMessageEntityRepository {
 	
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
 		
-		String sql = "SELECT * FROM line_message_entity WHERE user_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?";
-		
-		List<LineMessageEntity> list = jdbcTemplate.query(sql,
+		List<LineMessageEntity> list = jdbcTemplate.query(SELECT_SQL,
 				new Object[] {
 					userId,
 					limit,
