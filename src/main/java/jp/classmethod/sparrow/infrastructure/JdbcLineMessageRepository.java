@@ -57,8 +57,7 @@ public class JdbcLineMessageRepository implements LineMessageEntityRepository {
 	}
 	
 	public List<LineMessageEntity> findByUser(String userId, int offset, int limit) {
-		
-		List<LineMessageEntity> list = jdbcTemplate.query(SELECT_SQL,
+		return jdbcTemplate.query(SELECT_SQL,
 				new Object[] {
 					userId,
 					limit,
@@ -74,6 +73,5 @@ public class JdbcLineMessageRepository implements LineMessageEntityRepository {
 						return lineMessageEntity;
 					}
 				});
-		return list;
 	}
 }
