@@ -41,4 +41,5 @@ JAVA_OPTS="${JAVA_OPTS} -Dfile.encoding=UTF-8"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.port=8080"
 
 export SPRING_APPLICATION_JSON=$(cat /opt/sparrow/application.json)
+export SPRING_PROFILES_ACTIVE=aws
 EOF
