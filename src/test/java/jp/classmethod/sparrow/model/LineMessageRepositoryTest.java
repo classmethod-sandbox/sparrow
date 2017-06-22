@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.classmethod.sparrow.infrastructure;
+package jp.classmethod.sparrow.model;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -26,14 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jp.classmethod.sparrow.model.LineEvent;
-import jp.classmethod.sparrow.model.LineEventFixture;
-import jp.classmethod.sparrow.model.LineMessageEntity;
-import jp.classmethod.sparrow.model.LineMessageEntityFixture;
 
 /**
  * Created by kunita.fumiko on 2017/06/06.
@@ -42,10 +38,11 @@ import jp.classmethod.sparrow.model.LineMessageEntityFixture;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("aws")
-public class JdbcLineMessageRepositoryTest {
+@Transactional
+public class LineMessageRepositoryTest {
 	
 	@Autowired
-	JdbcLineMessageRepository sut;
+	LineMessageEntityRepository sut;
 	
 	
 	/**
@@ -62,7 +59,7 @@ public class JdbcLineMessageRepositoryTest {
 				LineEventFixture.createLineUserEvent(messageId, user, timeStamp, number);
 		LineMessageEntity numberLineMessageEntity = LineMessageEntityFixture.createLineEntity(numberEvent);
 		// exercise
-		LineMessageEntity actual = sut.save(numberLineMessageEntity);
+		LineMessageEntity actual = sut.create(numberLineMessageEntity);
 		// verify
 		assertThat(actual, is(numberLineMessageEntity));
 	}
@@ -85,7 +82,7 @@ public class JdbcLineMessageRepositoryTest {
 				LineEventFixture.createLineUserEvent("325714", user1, 1499378824L, number));
 		
 		stream.map(LineMessageEntityFixture::createLineEntity)
-			.forEach(sut::save);
+			.forEach(sut::create);
 		
 		// exercise
 		List<LineMessageEntity> actual = sut.findByUser(user1, 0, 2);
@@ -119,7 +116,7 @@ public class JdbcLineMessageRepositoryTest {
 				LineEventFixture.createLineUserEvent("325718", user1, 1499378828L, number),
 				LineEventFixture.createLineUserEvent("325719", user1, 1499378829L, number));
 		stream.map(LineMessageEntityFixture::createLineEntity)
-			.forEach(sut::save);
+			.forEach(sut::create);
 		
 		// exercise
 		List<LineMessageEntity> actual = sut.findByUser(user1, 2, 2);

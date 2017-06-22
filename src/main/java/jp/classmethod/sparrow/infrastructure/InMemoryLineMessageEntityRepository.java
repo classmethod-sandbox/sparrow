@@ -20,23 +20,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
-
 import jp.classmethod.sparrow.model.LineMessageEntity;
 import jp.classmethod.sparrow.model.LineMessageEntityRepository;
 
 /**
  * Created by kunita.fumiko on 2017/04/13.
  */
-@Repository
-@Profile("!aws")
 public class InMemoryLineMessageEntityRepository implements LineMessageEntityRepository {
 	
 	private final ConcurrentHashMap<String, List<LineMessageEntity>> map = new ConcurrentHashMap<>();
 	
 	
-	public LineMessageEntity save(LineMessageEntity lineMessageEntity) {
+	@Override
+	public <S extends LineMessageEntity> S create(S lineMessageEntity) {
 		String userId = lineMessageEntity.getUserId();
 		// LinedListを生成し、常にindex0にLineEntityを保存します
 		map.computeIfAbsent(userId, k -> new LinkedList<>()).add(0, lineMessageEntity);

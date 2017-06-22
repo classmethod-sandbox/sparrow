@@ -49,14 +49,14 @@ public class Calculator {
 			
 			// メッセージが"reset"の場合：データベースにLineEntityを保存し、"reset"を返します
 			case "reset":
-				lineMessageEntityRepository.save(createLineMessageEntity(event));
+				lineMessageEntityRepository.create(createLineMessageEntity(event));
 				return "reset";
 			
 			// メッセージが数字の場合：データベースにLineEntityを保存し、""を返します
 			// 仕様で定義されていない無効な値の場合："error"を返します。
 			default:
 				if (isNumber(messageText)) {
-					lineMessageEntityRepository.save(createLineMessageEntity(event));
+					lineMessageEntityRepository.create(createLineMessageEntity(event));
 					return "";
 				} else {
 					return "error";

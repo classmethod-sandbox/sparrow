@@ -17,6 +17,8 @@ package jp.classmethod.sparrow.model;
 
 import lombok.Data;
 
+import jp.sf.amateras.mirage.annotation.Table;
+
 /**
  * Created by mochizukimasao on 2017/04/11.
  *
@@ -24,6 +26,7 @@ import lombok.Data;
  * @since version
  */
 @Data
+@Table(name = "line_message_entity")
 public class LineMessageEntity {
 	
 	private String messageId;
