@@ -22,13 +22,31 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by kunita.fumiko on 2017/04/25.
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class Calculator {
+	
+	/**
+	 * 引数で受け取るLineEventからLineMessageEntityを生成します
+	 *
+	 * @param event LineEvent情報
+	 * @return lineMessageEntity
+	 */
+	static LineMessageEntity createLineMessageEntity(LineEvent event) {
+		LineMessageEntity lineMessageEntity = new LineMessageEntity();
+		lineMessageEntity.setMessageId(event.getMessage().getId());
+		lineMessageEntity.setUserId(event.getSource().getId());
+		lineMessageEntity.setTimestamp(event.getTimestamp());
+		lineMessageEntity.setValue(event.getMessage().getText());
+		return lineMessageEntity;
+	}
+	
 	
 	private final LineMessageEntityRepository lineMessageEntityRepository;
 	
@@ -39,6 +57,7 @@ public class Calculator {
 	 * @param event LineEvent LineEvent情報
 	 * @return result Linebotがユーザーに返信するメッセージ(text)
 	 */
+	@Transactional
 	public String save(LineEvent event) {
 		String messageText = event.getMessage().getText();
 		
@@ -96,20 +115,5 @@ public class Calculator {
 			offset = offset + limit;
 		}
 		return total;
-	}
-	
-	/**
-	 * 引数で受け取るLineEventからLineMessageEntityを生成します
-	 *
-	 * @param event LineEvent情報
-	 * @return lineMessageEntity
-	 */
-	public LineMessageEntity createLineMessageEntity(LineEvent event) {
-		LineMessageEntity lineMessageEntity = new LineMessageEntity();
-		lineMessageEntity.setMessageId(event.getMessage().getId());
-		lineMessageEntity.setUserId(event.getSource().getId());
-		lineMessageEntity.setTimestamp(event.getTimestamp());
-		lineMessageEntity.setValue(event.getMessage().getText());
-		return lineMessageEntity;
 	}
 }
