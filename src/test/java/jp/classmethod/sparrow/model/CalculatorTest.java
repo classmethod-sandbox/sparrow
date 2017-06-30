@@ -36,7 +36,7 @@ import jp.classmethod.sparrow.infrastructure.InMemoryLineMessageEntityRepository
 public class CalculatorTest {
 	
 	@Spy
-	InMemoryLineMessageEntityRepository inMemoryLineMessageEntityRepository;
+	LineMessageEntityRepository inMemoryLineMessageEntityRepository = new InMemoryLineMessageEntityRepository();
 	
 	@InjectMocks
 	Calculator sut;
@@ -142,7 +142,7 @@ public class CalculatorTest {
 				LineEventFixture.createLineUserEvent("325717", user1, 1499378828L, "12"));
 		
 		stream.map(LineMessageEntityFixture::createLineEntity)
-			.forEach((lineEntity) -> when(inMemoryLineMessageEntityRepository.save(lineEntity)).thenCallRealMethod());
+			.forEach((lineEntity) -> when(inMemoryLineMessageEntityRepository.create(lineEntity)).thenCallRealMethod());
 		
 		LineEvent totalEvent =
 				LineEventFixture.createLineUserEvent("325718", user1, 1499378829L, "total");

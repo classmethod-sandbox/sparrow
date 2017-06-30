@@ -76,6 +76,7 @@ bootRun.systemProperties["spring.profiles.active"] = springProfilesActive
 repositories {
 	jcenter()
 	mavenCentral()
+	maven { url "http://maven.xet.jp/release" } // for spring-data-mirage
 }
 
 dependencies {
@@ -85,13 +86,20 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 	compile "org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion"
 	
+	compile "org.springframework.data:spring-data-mirage:$springDataMirageVersion"
+	
+	// logger
+	compile("org.slf4j:slf4j-api:1.7.21") { force = true }
+	compile "ch.qos.logback:logback-classic:1.1.7"
+
 	// others
 	compile "jp.xet.spar-wings:spar-wings-httpexceptions:$sparWingsVersion"
+	compile "jp.xet.spar-wings:spar-wings-spring-data-chunk:$sparWingsVersion"
 	compile "org.apache.httpcomponents:httpclient:4.5.3"
 	compile "org.apache.commons:commons-lang3:3.0"
 	compile "org.flywaydb:flyway-core:$flywayVersion"
 	compileOnly "org.projectlombok:lombok:$lombokVersion"
-
+	
 	compile "com.h2database:h2:1.4.195"
 	compile "mysql:mysql-connector-java:5.1.42"
 	
